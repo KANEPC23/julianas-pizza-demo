@@ -3,1188 +3,1472 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Juliana's Pizza — Order Online</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<title>Juliana's Pizza — Operations Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --coal: #1a1714;
-    --char: #242018;
-    --ember: #c94a1e;
-    --flame: #e0622e;
-    --cream: #f5efe4;
-    --parchment: #ede5d6;
-    --gold: #c8a96e;
-    --muted: #8a7f70;
-    --border: rgba(200,169,110,0.2);
-  }
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
+:root {
+  --bg:        #0e0f11;
+  --surface:   #141618;
+  --surface2:  #1c1e22;
+  --surface3:  #242830;
+  --border:    rgba(255,255,255,0.07);
+  --border2:   rgba(255,255,255,0.12);
+  --text:      #eceef4;
+  --muted:     #a8b0be;
+  --dim:       #6b7585;
+  --ember:     #e05c2a;
+  --ember-dim: rgba(224,92,42,0.15);
+  --gold:      #c8a44e;
+  --gold-dim:  rgba(200,164,78,0.12);
+  --green:     #2ecc87;
+  --green-dim: rgba(46,204,135,0.12);
+  --blue:      #4d9de0;
+  --blue-dim:  rgba(77,157,224,0.12);
+  --red:       #e05252;
+  --red-dim:   rgba(224,82,82,0.12);
+  --yellow:    #e0c52a;
+  --yellow-dim:rgba(224,197,42,0.12);
+  --radius:    6px;
+  --font-mono: 'DM Mono', monospace;
+  --font-ui:   'DM Sans', sans-serif;
+  --font-disp: 'Syne', sans-serif;
+}
 
-  body {
-    background: var(--coal);
-    color: var(--cream);
-    font-family: 'DM Sans', sans-serif;
-    font-weight: 300;
-    min-height: 100vh;
-  }
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-weight: 300;
+  min-height: 100vh;
+  font-size: 14px;
+}
 
-  /* ─── HEADER ─── */
-  header {
-    position: sticky; top: 0; z-index: 100;
-    background: var(--coal);
-    border-bottom: 1px solid var(--border);
-    padding: 0 2rem;
-    display: flex; align-items: center; justify-content: space-between;
-    height: 64px;
-  }
-  .logo {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.5rem; letter-spacing: 0.02em;
-    color: var(--cream);
-  }
-  .logo span { color: var(--gold); font-style: italic; }
-  .header-right { display: flex; align-items: center; gap: 1.5rem; }
-  .location-select {
-    background: transparent;
-    border: 1px solid var(--border);
-    color: var(--cream);
-    padding: 6px 12px;
-    border-radius: 4px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.8rem;
-    cursor: pointer;
-  }
-  .location-select option { background: var(--coal); }
-  .cart-btn {
-    background: var(--ember);
-    color: var(--cream);
-    border: none;
-    padding: 10px 20px;
-    border-radius: 4px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.85rem;
-    font-weight: 500;
-    cursor: pointer;
-    display: flex; align-items: center; gap: 8px;
-    transition: background 0.2s;
-  }
-  .cart-btn:hover { background: var(--flame); }
-  .cart-count {
-    background: var(--cream); color: var(--ember);
-    width: 20px; height: 20px;
-    border-radius: 50%;
-    font-size: 0.7rem; font-weight: 700;
-    display: flex; align-items: center; justify-content: center;
-  }
+/* ── TOPBAR ── */
+.topbar {
+  display: flex; align-items: center;
+  padding: 0 1.5rem;
+  height: 52px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+  position: sticky; top: 0; z-index: 100;
+  gap: 1.5rem;
+}
+.tb-logo {
+  font-family: var(--font-disp);
+  font-weight: 800;
+  font-size: 0.95rem;
+  letter-spacing: 0.04em;
+  color: var(--text);
+  white-space: nowrap;
+}
+.tb-logo span { color: var(--ember); }
+.tb-divider { width:1px; height:20px; background: var(--border2); }
+.tb-label {
+  font-size: 0.7rem; letter-spacing:0.15em; text-transform:uppercase;
+  color: #a8b0be;
+}
+.tb-nav { display:flex; gap:0; margin-left:1rem; }
+.tb-tab {
+  background:none; border:none;
+  color: #a8b0be;
+  font-family: var(--font-ui);
+  font-size: 0.78rem; letter-spacing:0.05em; text-transform:uppercase;
+  padding: 0 14px; height:52px;
+  cursor:pointer; border-bottom:2px solid transparent;
+  transition: color 0.15s, border-color 0.15s;
+  white-space:nowrap;
+}
+.tb-tab:hover { color: var(--text); }
+.tb-tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+.tb-right { margin-left:auto; display:flex; align-items:center; gap:1rem; }
+.tb-live {
+  display:flex; align-items:center; gap:6px;
+  font-family: var(--font-mono); font-size:0.7rem; color: #a8b0be;
+}
+.live-dot {
+  width:6px; height:6px; border-radius:50%;
+  background: var(--green);
+  box-shadow: 0 0 6px var(--green);
+  animation: blink 2s ease-in-out infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.4} }
+.tb-user {
+  display:flex; align-items:center; gap:8px;
+  font-size:0.78rem; color: #a8b0be;
+}
+.user-avatar {
+  width:26px; height:26px; border-radius:50%;
+  background: var(--ember-dim);
+  border: 1px solid var(--ember);
+  display:flex; align-items:center; justify-content:center;
+  font-size:0.65rem; font-weight:500; color: var(--ember);
+}
+.loc-toggle {
+  display:flex; gap:0;
+  border:1px solid var(--border2); border-radius:var(--radius);
+  overflow:hidden;
+}
+.loc-btn {
+  background:none; border:none;
+  color: #a8b0be;
+  font-family: var(--font-ui); font-size:0.72rem;
+  padding: 5px 12px; cursor:pointer;
+  transition: all 0.15s;
+}
+.loc-btn.active { background: var(--surface3); color: var(--text); }
 
-  /* ─── HERO ─── */
-  .hero {
-    text-align: center;
-    padding: 5rem 2rem 4rem;
-    position: relative;
-    background: radial-gradient(ellipse at 50% 0%, rgba(201,74,30,0.15) 0%, transparent 70%);
-  }
-  .hero-eyebrow {
-    font-size: 0.75rem; letter-spacing: 0.25em; text-transform: uppercase;
-    color: var(--gold); margin-bottom: 1rem;
-  }
-  .hero h1 {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(2.5rem, 6vw, 4.5rem);
-    line-height: 1.1;
-    color: var(--cream);
-    margin-bottom: 1rem;
-  }
-  .hero h1 em { color: var(--gold); font-style: italic; }
-  .hero p {
-    color: var(--muted); font-size: 1rem; max-width: 460px; margin: 0 auto 2rem;
-    line-height: 1.7;
-  }
-  .coal-badge {
-    display: inline-flex; align-items: center; gap: 6px;
-    border: 1px solid var(--border);
-    color: var(--muted);
-    font-size: 0.75rem; letter-spacing: 0.08em;
-    padding: 6px 14px; border-radius: 20px;
-    margin-bottom: 3rem;
-  }
-  .flame-dot {
-    width: 7px; height: 7px; border-radius: 50%;
-    background: var(--ember);
-    box-shadow: 0 0 6px var(--ember);
-    animation: pulse 2s ease-in-out infinite;
-  }
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+/* ── PANELS ── */
+.panel { display:none; padding:1.5rem; max-width:1400px; margin:0 auto; }
+.panel.active { display:block; }
 
-  /* ─── CATEGORY TABS ─── */
-  .tabs-bar {
-    display: flex; gap: 0;
-    border-bottom: 1px solid var(--border);
-    padding: 0 2rem;
-    overflow-x: auto;
-    max-width: 1140px;
-    margin: 0 auto;
-    width: 100%;
-  }
-  /* full-width underline behind the centered tabs */
-  .tabs-wrap {
-    border-bottom: 1px solid var(--border);
-  }
-  .tabs-bar::-webkit-scrollbar { display: none; }
-  .tab-btn {
-    background: none; border: none;
-    color: var(--muted);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.85rem; letter-spacing: 0.05em;
-    text-transform: uppercase;
-    padding: 14px 20px;
-    cursor: pointer;
-    border-bottom: 2px solid transparent;
-    margin-bottom: -1px;
-    white-space: nowrap;
-    transition: color 0.2s, border-color 0.2s;
-  }
-  .tab-btn:hover { color: var(--cream); }
-  .tab-btn.active { color: var(--gold); border-bottom-color: var(--gold); }
+/* ── ALERT BAR ── */
+.alert-bar {
+  background: rgba(224,197,42,0.08);
+  border: 1px solid rgba(224,197,42,0.25);
+  border-radius: var(--radius);
+  padding: 10px 16px;
+  display:flex; align-items:center; gap:12px;
+  margin-bottom:1.25rem;
+  font-size:0.8rem;
+}
+.alert-bar .alert-icon { color: var(--yellow); font-size:0.85rem; }
+.alert-bar .alert-text { color: var(--text); }
+.alert-bar .alert-text strong { color: var(--yellow); }
+.alert-bar .alert-dismiss {
+  margin-left:auto; background:none; border:none;
+  color: var(--muted); cursor:pointer; font-size:1rem; line-height:1;
+}
 
-  /* ─── MENU GRID ─── */
-  .menu-section {
-    max-width: 1140px; margin: 0 auto;
-    padding: 3rem 2rem;
-  }
-  .section-label {
-    font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase;
-    color: var(--gold); margin-bottom: 1.5rem;
-  }
-  .menu-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1px;
-    border: 1px solid var(--border);
-  }
-  .menu-item {
-    background: var(--char);
-    padding: 1.5rem;
-    display: flex; flex-direction: column; gap: 0.5rem;
-    border: 1px solid var(--border);
-    position: relative;
-    transition: background 0.2s;
-  }
-  .menu-item:hover { background: #2a2520; }
-  .item-name {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.1rem; color: var(--cream);
-  }
-  .item-desc {
-    font-size: 0.8rem; color: var(--muted);
-    line-height: 1.6; flex: 1;
-  }
-  .item-footer {
-    display: flex; align-items: center; justify-content: space-between;
-    margin-top: 0.75rem;
-  }
-  .item-price {
-    font-size: 1rem; color: var(--gold); font-weight: 500;
-  }
-  .add-btn {
-    background: transparent;
-    border: 1px solid var(--ember);
-    color: var(--ember);
-    width: 32px; height: 32px;
-    border-radius: 50%;
-    font-size: 1.2rem; line-height: 1;
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    transition: all 0.2s;
-    flex-shrink: 0;
-  }
-  .add-btn:hover { background: var(--ember); color: var(--cream); }
-  .add-btn.blocked { border-color: var(--muted); color: var(--muted); cursor: not-allowed; opacity: 0.4; }
-  .item-tag {
-    font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase;
-    color: var(--ember); margin-bottom: 2px;
-  }
+/* ── KPI ROW ── */
+.kpi-row { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:1px; margin-bottom:1.25rem; border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; }
+.kpi-card {
+  background: var(--surface);
+  padding: 1.1rem 1.25rem;
+  position:relative;
+  transition: background 0.15s;
+}
+.kpi-card:hover { background: var(--surface2); }
+.kpi-card::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:2px;
+  background: var(--accent, transparent);
+}
+.kpi-label { font-size:0.65rem; letter-spacing:0.14em; text-transform:uppercase; color: var(--muted); margin-bottom:0.5rem; }
+.kpi-val { font-family: var(--font-disp); font-size:1.7rem; font-weight:700; color: var(--text); line-height:1; margin-bottom:0.35rem; }
+.kpi-sub { font-size:0.72rem; color: #a8b0be; display:flex; align-items:center; gap:5px; }
+.kpi-delta { font-family: var(--font-mono); font-size:0.68rem; padding:2px 5px; border-radius:3px; }
+.kpi-delta.up { background: var(--green-dim); color: var(--green); }
+.kpi-delta.down { background: var(--red-dim); color: var(--red); }
+.kpi-delta.warn { background: var(--yellow-dim); color: var(--yellow); }
+.kpi-source { font-size:0.62rem; color: #7a8494; margin-top:0.3rem; }
 
-  /* ─── DIVIDER ─── */
-  .section-divider {
-    height: 1px; background: var(--border);
-    margin: 0 2rem;
-  }
+/* ── GRID LAYOUTS ── */
+.grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:1.25rem; margin-bottom:1.25rem; }
+.grid-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:1.25rem; margin-bottom:1.25rem; }
+.grid-3-1 { display:grid; grid-template-columns:2fr 1fr; gap:1.25rem; margin-bottom:1.25rem; }
+.grid-1-2 { display:grid; grid-template-columns:1fr 2fr; gap:1.25rem; margin-bottom:1.25rem; }
+@media(max-width:900px) { .grid-2,.grid-3,.grid-3-1,.grid-1-2 { grid-template-columns:1fr; } }
 
-  /* ─── CART DRAWER ─── */
-  .cart-overlay {
-    display: none;
-    position: fixed; inset: 0;
-    background: rgba(0,0,0,0.6);
-    z-index: 200;
-    backdrop-filter: blur(2px);
-  }
-  .cart-overlay.open { display: block; }
-  .cart-drawer {
-    position: fixed; right: 0; top: 0; bottom: 0;
-    width: min(440px, 100vw);
-    background: var(--char);
-    border-left: 1px solid var(--border);
-    z-index: 201;
-    display: flex; flex-direction: column;
-    transform: translateX(100%);
-    transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
-  }
-  .cart-drawer.open { transform: translateX(0); }
-  .cart-header {
-    padding: 1.5rem;
-    border-bottom: 1px solid var(--border);
-    display: flex; align-items: center; justify-content: space-between;
-  }
-  .cart-header h2 {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.3rem;
-  }
-  .close-btn {
-    background: none; border: none;
-    color: var(--muted); font-size: 1.5rem;
-    cursor: pointer; line-height: 1;
-    padding: 4px;
-  }
-  .close-btn:hover { color: var(--cream); }
-  .cart-items { flex: 1; overflow-y: auto; padding: 1rem 1.5rem; }
-  .cart-empty {
-    text-align: center; color: var(--muted);
-    padding: 3rem 0; font-size: 0.9rem;
-  }
-  .cart-line {
-    display: flex; align-items: flex-start; gap: 1rem;
-    padding: 1rem 0;
-    border-bottom: 1px solid var(--border);
-  }
-  .cart-line-info { flex: 1; }
-  .cart-line-name { font-size: 0.95rem; color: var(--cream); margin-bottom: 4px; }
-  .cart-line-price { font-size: 0.85rem; color: var(--gold); }
-  .qty-ctrl {
-    display: flex; align-items: center; gap: 10px;
-  }
-  .qty-btn {
-    background: none;
-    border: 1px solid var(--border);
-    color: var(--cream);
-    width: 26px; height: 26px;
-    border-radius: 50%;
-    font-size: 1rem; cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    transition: border-color 0.2s;
-  }
-  .qty-btn:hover { border-color: var(--ember); color: var(--ember); }
-  .qty-val { font-size: 0.9rem; min-width: 14px; text-align: center; }
-  .cart-footer { padding: 1.5rem; border-top: 1px solid var(--border); }
-  .subtotal-row {
-    display: flex; justify-content: space-between;
-    margin-bottom: 6px; font-size: 0.85rem; color: var(--muted);
-  }
-  .total-row {
-    display: flex; justify-content: space-between;
-    font-size: 1.1rem; color: var(--cream);
-    margin-bottom: 1.25rem; padding-top: 10px;
-    border-top: 1px solid var(--border);
-  }
-  .total-row span:last-child { color: var(--gold); font-weight: 500; }
-  .checkout-btn {
-    width: 100%; background: var(--ember);
-    border: none; color: var(--cream);
-    padding: 14px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.95rem; font-weight: 500;
-    border-radius: 4px; cursor: pointer;
-    letter-spacing: 0.03em;
-    transition: background 0.2s;
-  }
-  .checkout-btn:hover { background: var(--flame); }
-  .checkout-btn:disabled { background: var(--muted); cursor: not-allowed; }
+/* ── CARD ── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow:hidden;
+}
+.card-header {
+  display:flex; align-items:center; justify-content:space-between;
+  padding: 0.85rem 1.1rem;
+  border-bottom: 1px solid var(--border);
+}
+.card-title {
+  font-size:0.7rem; letter-spacing:0.14em; text-transform:uppercase; color: #a8b0be;
+  display:flex; align-items:center; gap:8px;
+}
+.card-title .src-badge {
+  font-size:0.55rem; letter-spacing:0.1em;
+  padding:2px 6px; border-radius:3px;
+  background: var(--surface3); color: #7a8494;
+  border:1px solid var(--border);
+}
+.card-body { padding: 1.1rem; }
+.card-action {
+  font-size:0.68rem; color: #a8b0be; cursor:pointer;
+  background:none; border:none; font-family: var(--font-ui);
+}
+.card-action:hover { color: var(--text); }
 
-  /* ─── CHECKOUT MODAL ─── */
-  .modal-overlay {
-    display: none;
-    position: fixed; inset: 0;
-    background: rgba(0,0,0,0.75);
-    z-index: 300;
-    align-items: center; justify-content: center;
-    backdrop-filter: blur(3px);
-  }
-  .modal-overlay.open { display: flex; }
-  .modal {
-    background: var(--char);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    width: min(520px, 94vw);
-    max-height: 90vh;
-    overflow-y: auto;
-    padding: 2rem;
-  }
-  .modal h2 {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.6rem; margin-bottom: 0.25rem;
-  }
-  .modal-sub { color: var(--muted); font-size: 0.85rem; margin-bottom: 2rem; }
-  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
-  .form-row.full { grid-template-columns: 1fr; }
-  .form-group { display: flex; flex-direction: column; gap: 6px; }
-  .form-group label { font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
-  .form-group input, .form-group select {
-    background: rgba(255,255,255,0.05);
-    border: 1px solid var(--border);
-    color: var(--cream);
-    padding: 10px 12px;
-    border-radius: 4px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.9rem;
-    outline: none;
-    transition: border-color 0.2s;
-  }
-  .form-group input:focus, .form-group select:focus { border-color: var(--gold); }
-  .form-group select option { background: var(--coal); }
-  .order-type-tabs {
-    display: flex; gap: 0;
-    border: 1px solid var(--border);
-    border-radius: 4px; overflow: hidden;
-    margin-bottom: 1.5rem;
-  }
-  .ot-btn {
-    flex: 1; background: none; border: none;
-    color: var(--muted); padding: 10px;
-    font-family: 'DM Sans', sans-serif; font-size: 0.85rem;
-    cursor: pointer; transition: all 0.2s;
-    border-right: 1px solid var(--border);
-  }
-  .ot-btn:last-child { border-right: none; }
-  .ot-btn.active { background: var(--ember); color: var(--cream); }
-  .order-summary {
-    background: rgba(0,0,0,0.3);
-    border: 1px solid var(--border);
-    border-radius: 4px; padding: 1rem;
-    margin-bottom: 1.5rem;
-  }
-  .order-summary-title {
-    font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase;
-    color: var(--gold); margin-bottom: 0.75rem;
-  }
-  .summary-line {
-    display: flex; justify-content: space-between;
-    font-size: 0.85rem; color: var(--muted);
-    padding: 3px 0;
-  }
-  .summary-total {
-    display: flex; justify-content: space-between;
-    font-size: 1rem; color: var(--cream);
-    margin-top: 0.5rem; padding-top: 0.5rem;
-    border-top: 1px solid var(--border);
-  }
-  .place-order-btn {
-    width: 100%; background: var(--ember);
-    border: none; color: var(--cream);
-    padding: 15px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 1rem; font-weight: 500;
-    border-radius: 4px; cursor: pointer;
-    transition: background 0.2s;
-    margin-top: 0.5rem;
-  }
-  .place-order-btn:hover { background: var(--flame); }
+/* ── CHART ── */
+.chart-wrap { padding: 1rem 1.1rem 0.5rem; }
+.bar-chart { display:flex; align-items:flex-end; gap:3px; height:120px; }
+.bar-group { flex:1; display:flex; gap:1px; align-items:flex-end; }
+.bar {
+  flex:1; border-radius:2px 2px 0 0;
+  position:relative; cursor:default;
+  transition: opacity 0.15s;
+  min-width:4px;
+}
+.bar:hover { opacity:0.85; }
+.bar.wpb { background: var(--ember); }
+.bar.bk  { background: var(--blue); }
+.chart-labels { display:flex; gap:3px; padding:4px 0 0; }
+.chart-label { flex:1; text-align:center; font-size:0.58rem; color: #7a8494; font-family: var(--font-mono); }
+.chart-legend { display:flex; gap:1rem; margin-bottom:0.5rem; }
+.legend-item { display:flex; align-items:center; gap:5px; font-size:0.68rem; color: #a8b0be; }
+.legend-dot { width:8px; height:8px; border-radius:2px; }
 
-  /* ─── SUCCESS STATE ─── */
-  .success-state {
-    display: none; text-align: center; padding: 2rem;
-  }
-  .success-icon {
-    width: 64px; height: 64px; border-radius: 50%;
-    background: rgba(201,74,30,0.15);
-    border: 1px solid var(--ember);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.75rem; margin: 0 auto 1.5rem;
-  }
-  .success-state h2 {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.8rem; margin-bottom: 0.5rem;
-  }
-  .success-state p { color: var(--muted); line-height: 1.6; max-width: 320px; margin: 0 auto 1.5rem; }
-  .order-num { color: var(--gold); font-size: 1.4rem; font-weight: 500; margin-bottom: 0.5rem; }
-  .est-time { color: var(--ember); font-size: 0.9rem; }
+/* ── LOCATION COMPARE ── */
+.loc-compare { display:grid; grid-template-columns:1fr 1fr; gap:1px; background: var(--border); }
+.loc-col { background: var(--surface); padding:1rem 1.1rem; }
+.loc-col-head {
+  display:flex; align-items:center; gap:8px;
+  margin-bottom:0.85rem;
+}
+.loc-dot { width:8px; height:8px; border-radius:50%; }
+.loc-dot.wpb { background: var(--ember); }
+.loc-dot.bk  { background: var(--blue); }
+.loc-name { font-family: var(--font-disp); font-size:0.85rem; font-weight:600; }
+.loc-row {
+  display:flex; justify-content:space-between;
+  padding:5px 0; border-bottom:1px solid var(--border);
+  font-size:0.78rem;
+}
+.loc-row:last-child { border-bottom:none; }
+.loc-row-label { color: #a8b0be; }
+.loc-row-val { font-family: var(--font-mono); color: var(--text); }
+.loc-row-val.good { color: var(--green); }
+.loc-row-val.warn { color: var(--yellow); }
+.loc-row-val.bad  { color: var(--red); }
 
-  /* ─── FOOTER ─── */
-  footer {
-    border-top: 1px solid var(--border);
-    padding: 3rem 2rem;
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 2rem;
-    max-width: 1100px; margin: 0 auto;
-  }
-  .footer-brand {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.2rem; color: var(--cream);
-    margin-bottom: 0.5rem;
-  }
-  .footer-sub { color: var(--muted); font-size: 0.8rem; line-height: 1.7; }
-  .footer-col h4 {
-    font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase;
-    color: var(--gold); margin-bottom: 0.75rem;
-  }
-  .footer-col p { color: var(--muted); font-size: 0.85rem; line-height: 1.8; }
-  .footer-bottom {
-    border-top: 1px solid var(--border);
-    padding: 1.5rem 2rem;
-    text-align: center;
-    color: var(--muted); font-size: 0.75rem;
-    letter-spacing: 0.05em;
-  }
+/* ── DATA TABLE ── */
+.data-table { width:100%; border-collapse:collapse; }
+.data-table th {
+  font-size:0.6rem; letter-spacing:0.12em; text-transform:uppercase;
+  color: #a8b0be; padding:6px 10px; text-align:left;
+  border-bottom:1px solid var(--border);
+  font-weight:400;
+}
+.data-table td {
+  padding:8px 10px; border-bottom:1px solid var(--border);
+  font-size:0.78rem; color: var(--text);
+  vertical-align:middle;
+}
+.data-table tr:last-child td { border-bottom:none; }
+.data-table tr:hover td { background: rgba(255,255,255,0.02); }
+.data-table td.mono { font-family: var(--font-mono); }
+.data-table td.muted { color: #a8b0be; }
+.status-pill {
+  display:inline-flex; align-items:center; gap:4px;
+  font-size:0.62rem; letter-spacing:0.08em; text-transform:uppercase;
+  padding:3px 8px; border-radius:20px;
+  font-family: var(--font-mono);
+}
+.status-pill.ready  { background: var(--green-dim); color: var(--green); }
+.status-pill.pending{ background: var(--yellow-dim); color: var(--yellow); }
+.status-pill.error  { background: var(--red-dim);   color: var(--red); }
+.status-pill.paid   { background: var(--blue-dim);  color: var(--blue); }
+.status-pill.shipped{ background: var(--green-dim); color: var(--green); }
+.status-pill.prep   { background: var(--gold-dim);  color: var(--gold); }
 
-  /* ─── TOAST ─── */
-  .toast {
-    position: fixed; bottom: 2rem; left: 50%;
-    transform: translateX(-50%) translateY(120%);
-    background: var(--ember); color: var(--cream);
-    padding: 10px 20px; border-radius: 4px;
-    font-size: 0.85rem; font-weight: 500;
-    z-index: 400;
-    transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
-    white-space: nowrap;
-  }
-  .toast.show { transform: translateX(-50%) translateY(0); }
+/* ── PROGRESS BARS ── */
+.prog-row { margin-bottom:0.65rem; }
+.prog-row:last-child { margin-bottom:0; }
+.prog-label { display:flex; justify-content:space-between; margin-bottom:4px; font-size:0.75rem; }
+.prog-label span:first-child { color: #a8b0be; }
+.prog-label span:last-child { font-family: var(--font-mono); color: var(--text); }
+.prog-track { height:4px; background: var(--surface3); border-radius:2px; overflow:hidden; }
+.prog-fill { height:100%; border-radius:2px; transition: width 1s ease; }
+.prog-fill.green { background: var(--green); }
+.prog-fill.yellow{ background: var(--yellow); }
+.prog-fill.red   { background: var(--red); }
+.prog-fill.ember { background: var(--ember); }
+.prog-fill.blue  { background: var(--blue); }
 
-  /* ─── FROZEN SECTION ─── */
-  .frozen-section {
-    background: linear-gradient(180deg, var(--coal) 0%, #0d1a2a 100%);
-    border-top: 1px solid rgba(100,160,220,0.2);
-    border-bottom: 1px solid rgba(100,160,220,0.2);
-    padding: 4rem 2rem;
-  }
-  .frozen-inner { max-width: 1100px; margin: 0 auto; }
-  .frozen-header {
-    display: flex; justify-content: space-between; align-items: flex-start;
-    flex-wrap: wrap; gap: 1.5rem; margin-bottom: 2.5rem;
-  }
-  .frozen-eyebrow {
-    font-size: 0.72rem; letter-spacing: 0.22em; text-transform: uppercase;
-    color: #6ab0dc; margin-bottom: 0.5rem;
-  }
-  .frozen-title {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(1.8rem, 4vw, 2.8rem);
-    color: var(--cream); margin-bottom: 0.5rem;
-  }
-  .frozen-sub { color: var(--muted); font-size: 0.88rem; line-height: 1.7; max-width: 440px; }
-  .frozen-trust { display: flex; flex-direction: column; gap: 8px; padding-top: 4px; }
-  .trust-item { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; color: var(--muted); }
-  .trust-icon { font-size: 0.9rem; }
-  .frozen-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 1px;
-    border: 1px solid rgba(100,160,220,0.15);
-  }
-  .frozen-card {
-    background: rgba(13,26,42,0.8);
-    border: 1px solid rgba(100,160,220,0.12);
-    display: flex; flex-direction: column;
-    transition: background 0.2s;
-  }
-  .frozen-card:hover { background: rgba(20,38,58,0.9); }
-  .frozen-img-placeholder {
-    height: 160px;
-    background: radial-gradient(circle at 50% 60%, rgba(201,74,30,0.25), rgba(13,26,42,0.6));
-    display: flex; align-items: center; justify-content: center;
-    position: relative; border-bottom: 1px solid rgba(100,160,220,0.1);
-  }
-  .frozen-img-placeholder.pep {
-    background: radial-gradient(circle at 50% 60%, rgba(160,30,30,0.3), rgba(13,26,42,0.6));
-  }
-  .pizza-emoji { font-size: 3.5rem; }
-  .frozen-badge {
-    position: absolute; top: 10px; right: 10px;
-    background: rgba(100,160,220,0.15);
-    border: 1px solid rgba(100,160,220,0.3);
-    color: #6ab0dc; font-size: 0.65rem;
-    letter-spacing: 0.1em; text-transform: uppercase;
-    padding: 3px 8px; border-radius: 3px;
-  }
-  .frozen-card-body { padding: 1.25rem; flex: 1; display: flex; flex-direction: column; gap: 0.4rem; }
-  .frozen-sku-tag { font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: #6ab0dc; }
-  .frozen-item-name { font-family: 'Playfair Display', serif; font-size: 1.2rem; color: var(--cream); }
-  .frozen-item-desc { font-size: 0.78rem; color: var(--muted); line-height: 1.6; flex: 1; }
-  .frozen-price-row { display: flex; align-items: center; justify-content: space-between; margin-top: 0.75rem; }
-  .frozen-price { font-size: 1.1rem; color: var(--gold); font-weight: 500; }
-  .frozen-per { font-size: 0.75rem; color: var(--muted); }
-  .frozen-qty-wrap { display: flex; align-items: center; gap: 10px; }
-  .fqty-btn {
-    background: none; border: 1px solid rgba(100,160,220,0.25);
-    color: #6ab0dc; width: 28px; height: 28px; border-radius: 50%;
-    font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;
-    transition: all 0.2s;
-  }
-  .fqty-btn:hover { background: rgba(100,160,220,0.15); }
-  .fqty-val { font-size: 0.95rem; min-width: 16px; text-align: center; color: var(--cream); }
-  .ship-card { padding: 1.25rem; }
-  .calc-ship-btn {
-    width: 100%; background: rgba(100,160,220,0.12);
-    border: 1px solid rgba(100,160,220,0.3);
-    color: #6ab0dc; padding: 10px;
-    font-family: 'DM Sans', sans-serif; font-size: 0.85rem;
-    border-radius: 4px; cursor: pointer; transition: all 0.2s;
-  }
-  .calc-ship-btn:hover { background: rgba(100,160,220,0.22); }
-  .ship-result-row {
-    display: flex; justify-content: space-between;
-    font-size: 0.82rem; color: var(--muted); padding: 4px 0;
-    border-bottom: 1px solid rgba(100,160,220,0.08);
-  }
-  .ship-result-row.total {
-    color: var(--cream); font-size: 1rem;
-    border-bottom: none; padding-top: 8px; margin-top: 4px;
-  }
-  .ship-result-row.total span:last-child { color: var(--gold); }
-  .frozen-checkout-btn {
-    width: 100%; background: var(--ember);
-    border: none; color: var(--cream);
-    padding: 11px; margin-top: 1rem;
-    font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 500;
-    border-radius: 4px; cursor: pointer; transition: background 0.2s;
-  }
-  .frozen-checkout-btn:hover { background: var(--flame); }
-  .frozen-disclaimer {
-    margin-top: 1.5rem; font-size: 0.75rem; color: var(--muted);
-    line-height: 1.7; border-top: 1px solid rgba(100,160,220,0.1);
-    padding-top: 1rem;
-  }
+/* ── MINI STAT ── */
+.mini-stats { display:grid; grid-template-columns:1fr 1fr; gap:1px; background: var(--border); }
+.mini-stat { background: var(--surface2); padding:0.85rem 1rem; }
+.mini-stat-val { font-family: var(--font-disp); font-size:1.3rem; font-weight:700; color: var(--text); }
+.mini-stat-label { font-size:0.65rem; color: #a8b0be; margin-top:2px; letter-spacing:0.06em; }
 
-  @media(max-width:900px) {
-    .menu-grid { grid-template-columns: repeat(2, 1fr); }
-  }
-  @media(max-width:600px) {
-    .header-right { gap: 0.75rem; }
-    .location-select { display: none; }
-    .hero { padding: 3rem 1.25rem 2.5rem; }
-    .tabs-bar { padding: 0 1rem; }
-    .menu-section { padding: 2rem 1rem; }
-    .menu-grid { grid-template-columns: 1fr; }
-    footer { padding: 2rem 1rem; }
-  }
+/* ── PRICE MOVER ── */
+.price-mover { display:flex; align-items:center; gap:10px; padding:7px 0; border-bottom:1px solid var(--border); }
+.price-mover:last-child { border-bottom:none; }
+.pm-item { flex:1; font-size:0.78rem; color: var(--text); }
+.pm-change { font-family: var(--font-mono); font-size:0.72rem; padding:2px 6px; border-radius:3px; }
+.pm-change.up  { background: var(--red-dim); color: var(--red); }
+.pm-change.dn  { background: var(--green-dim); color: var(--green); }
+.pm-vendor { font-size:0.65rem; color: #a8b0be; }
+
+/* ── DONUT ── */
+.donut-wrap { position:relative; display:flex; align-items:center; justify-content:center; }
+.donut-center { position:absolute; text-align:center; }
+.donut-center .big { font-family: var(--font-disp); font-size:1.4rem; font-weight:700; }
+.donut-center .sm  { font-size:0.62rem; color: var(--muted); margin-top:1px; }
+
+/* ── ACTIVITY FEED ── */
+.activity-item { display:flex; gap:10px; padding:8px 0; border-bottom:1px solid var(--border); }
+.activity-item:last-child { border-bottom:none; }
+.act-icon { width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.75rem; flex-shrink:0; margin-top:1px; }
+.act-icon.order  { background: var(--ember-dim); }
+.act-icon.invoice{ background: var(--gold-dim); }
+.act-icon.alert  { background: var(--yellow-dim); }
+.act-icon.frozen { background: var(--blue-dim); }
+.act-icon.payment{ background: var(--green-dim); }
+.act-body { flex:1; }
+.act-text { font-size:0.78rem; color: var(--text); line-height:1.5; }
+.act-time { font-size:0.65rem; color: #a8b0be; font-family: var(--font-mono); margin-top:1px; }
+
+/* ── SECTION HEADER ── */
+.section-hd { display:flex; align-items:baseline; gap:0.75rem; margin-bottom:1rem; }
+.section-hd h2 { font-family: var(--font-disp); font-size:1rem; font-weight:700; color: var(--text); }
+.section-hd span { font-size:0.65rem; letter-spacing:0.12em; text-transform:uppercase; color: #a8b0be; }
+
+/* ── SPARKLINE ── */
+.sparkline { display:flex; align-items:flex-end; gap:2px; height:28px; }
+.spark-bar { width:4px; border-radius:1px; background: var(--ember); opacity:0.6; }
+.spark-bar.last { opacity:1; }
+
+/* ── EMPTY ── */
+.empty-state { text-align:center; color: var(--muted); padding:2rem; font-size:0.82rem; }
+
+/* ── QBO SUMMARY ── */
+.qbo-rows { }
+.qbo-row { display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid var(--border); font-size:0.8rem; }
+.qbo-row:last-child { border-bottom:none; }
+.qbo-row-label { color: #a8b0be; }
+.qbo-row-val { font-family: var(--font-mono); }
+.qbo-row.total .qbo-row-label { color: var(--text); font-weight:500; }
+.qbo-row.total .qbo-row-val { color: var(--green); font-weight:500; }
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width:5px; height:5px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--dim); border-radius:3px; }
 </style>
 </head>
 <body>
 
-<!-- HEADER -->
-<header>
-  <div class="logo">Juliana's <span>Pizza</span></div>
-  <div class="header-right">
-    <select class="location-select" id="locationSelect">
-      <option value="wpb">West Palm Beach, FL</option>
-      <option value="bk">Brooklyn, NY</option>
-    </select>
-    <button class="cart-btn" onclick="openCart()">
-      <span>&#128722; Cart</span>
-      <span class="cart-count" id="cartCount">0</span>
-    </button>
-  </div>
-</header>
-
-<!-- HERO -->
-<section class="hero">
-  <p class="hero-eyebrow">Est. 2012 · Brooklyn Heritage</p>
-  <h1>Coal-Fired Pizza,<br><em>Straight from Brooklyn</em></h1>
-  <p>Thin crusts. House-made ingredients. The original Grimaldi recipe, now in the NORA District.</p>
-  <div class="coal-badge"><span class="flame-dot"></span> Coal-fired ovens · Never gas</div>
-</section>
-
-<!-- CATEGORY TABS -->
-<div class="tabs-wrap">
-  <div class="tabs-bar">
-    <button class="tab-btn active" onclick="filterCategory('all', this)">All</button>
-    <button class="tab-btn" onclick="filterCategory('pizza', this)">Pizzas</button>
-    <button class="tab-btn" onclick="filterCategory('salad', this)">Salads</button>
-    <button class="tab-btn" onclick="filterCategory('drink', this)">Drinks</button>
-    <button class="tab-btn" onclick="filterCategory('dessert', this)">Desserts</button>
-  </div>
-</div>
-
-<!-- MENU -->
-<section class="menu-section">
-  <p class="section-label" id="sectionLabel">Full Menu</p>
-  <div id="pieBanner" style="display:none;align-items:center;justify-content:space-between;border:1px solid;border-radius:4px;padding:10px 16px;margin-bottom:1.25rem;font-size:0.85rem;font-weight:500;transition:all 0.3s;"></div>
-  <div class="menu-grid" id="menuGrid"></div>
-</section>
-
-<!-- FROZEN NATIONWIDE SECTION -->
-<section class="frozen-section" id="frozenSection">
-  <div class="frozen-inner">
-    <div class="frozen-header">
-      <div>
-        <p class="frozen-eyebrow">&#10052; Ship Nationwide · Arrives Frozen</p>
-        <h2 class="frozen-title">Take &amp; Bake at Home</h2>
-        <p class="frozen-sub">The same coal-fired recipe — prepped, frozen, and shipped to your door in cold-chain insulated packaging. Bake in your oven in 12 minutes.</p>
-      </div>
-      <div class="frozen-trust">
-        <div class="trust-item"><span class="trust-icon">&#10052;</span><span>Dry-ice packed</span></div>
-        <div class="trust-item"><span class="trust-icon">&#9992;</span><span>2-day express</span></div>
-        <div class="trust-item"><span class="trust-icon">&#128481;</span><span>Ships Mon–Wed</span></div>
-      </div>
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="tb-logo">Juliana's <span>●</span> Ops</div>
+  <div class="tb-divider"></div>
+  <span class="tb-label">Dashboard</span>
+  <nav class="tb-nav">
+    <button class="tb-tab active" onclick="showPanel('overview',this)">Overview</button>
+    <button class="tb-tab" onclick="showPanel('sales',this)">Sales</button>
+    <button class="tb-tab" onclick="showPanel('costs',this)">Food Cost</button>
+    <button class="tb-tab" onclick="showPanel('ordering',this)">Ordering</button>
+    <button class="tb-tab" onclick="showPanel('financials',this)">Financials</button>
+  </nav>
+  <div class="tb-right">
+    <div class="loc-toggle">
+      <button class="loc-btn active">Both Locations</button>
+      <button class="loc-btn">WPB</button>
+      <button class="loc-btn">Brooklyn</button>
     </div>
-
-    <div class="frozen-grid">
-      <!-- Margherita -->
-      <div class="frozen-card">
-        <div class="frozen-img-wrap">
-          <div class="frozen-img-placeholder">
-            <span class="pizza-emoji">&#127829;</span>
-            <span class="frozen-badge">&#10052; Frozen</span>
-          </div>
-        </div>
-        <div class="frozen-card-body">
-          <p class="frozen-sku-tag">Take &amp; Bake · 19oz</p>
-          <p class="frozen-item-name">Margherita</p>
-          <p class="frozen-item-desc">San Marzano tomato, fresh mozzarella, basil. The one that started it all. As seen on FreshDirect.</p>
-          <div class="frozen-price-row">
-            <div>
-              <span class="frozen-price">$21.99</span>
-              <span class="frozen-per"> / pie</span>
-            </div>
-            <div class="frozen-qty-wrap">
-              <button class="fqty-btn" onclick="changeFrozenQty('margherita',-1)">−</button>
-              <span class="fqty-val" id="fq-margherita">0</span>
-              <button class="fqty-btn" onclick="changeFrozenQty('margherita',1)">+</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Pepperoni -->
-      <div class="frozen-card">
-        <div class="frozen-img-wrap">
-          <div class="frozen-img-placeholder pep">
-            <span class="pizza-emoji">&#127829;</span>
-            <span class="frozen-badge">&#10052; Frozen</span>
-          </div>
-        </div>
-        <div class="frozen-card-body">
-          <p class="frozen-sku-tag">Take &amp; Bake · 20oz</p>
-          <p class="frozen-item-name">Pepperoni</p>
-          <p class="frozen-item-desc">San Marzano tomato, fresh mozzarella, house-cured pepperoni. Classic Brooklyn done right.</p>
-          <div class="frozen-price-row">
-            <div>
-              <span class="frozen-price">$22.99</span>
-              <span class="frozen-per"> / pie</span>
-            </div>
-            <div class="frozen-qty-wrap">
-              <button class="fqty-btn" onclick="changeFrozenQty('pepperoni',-1)">−</button>
-              <span class="fqty-val" id="fq-pepperoni">0</span>
-              <button class="fqty-btn" onclick="changeFrozenQty('pepperoni',1)">+</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Shipping calculator -->
-      <div class="frozen-card ship-card">
-        <p class="frozen-sku-tag">Shipping Calculator</p>
-        <p class="frozen-item-name" style="margin-bottom:0.75rem;">Estimate Your Order</p>
-        <div class="ship-calc">
-          <div class="form-group" style="margin-bottom:0.75rem;">
-            <label style="font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:5px;">Destination ZIP</label>
-            <input type="text" id="shipZip" maxlength="5" placeholder="e.g. 10001" style="background:rgba(255,255,255,0.05);border:1px solid var(--border);color:var(--cream);padding:9px 12px;border-radius:4px;font-family:'DM Sans',sans-serif;font-size:0.9rem;width:100%;outline:none;">
-          </div>
-          <button class="calc-ship-btn" onclick="calcShipping()">Calculate Shipping →</button>
-          <div id="shipResult" style="margin-top:1rem;display:none;">
-            <div class="ship-result-row"><span>Pies ordered</span><span id="srPies">—</span></div>
-            <div class="ship-result-row"><span>Subtotal</span><span id="srSub">—</span></div>
-            <div class="ship-result-row"><span>Cold-chain shipping</span><span id="srShip">—</span></div>
-            <div class="ship-result-row total"><span>Estimated Total</span><span id="srTotal">—</span></div>
-            <button class="frozen-checkout-btn" onclick="openFrozenCheckout()">Order Now →</button>
-          </div>
-          <div id="shipNote" style="margin-top:0.75rem;font-size:0.75rem;color:var(--muted);line-height:1.6;display:none;"></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="frozen-disclaimer">
-      &#10052; Orders ship Monday–Wednesday to ensure arrival before the weekend. Orders placed after Wednesday noon ship the following week.
-      All pies are vacuum-sealed and packed with dry ice. Stays frozen for 48 hours in transit.
-    </div>
-  </div>
-</section>
-
-<!-- FROZEN CHECKOUT MODAL -->
-<div class="modal-overlay" id="frozenModal">
-  <div class="modal">
-    <div id="frozenForm">
-      <h2>Ship Nationwide</h2>
-      <p class="modal-sub">Take &amp; Bake · Cold-chain delivery to your door</p>
-      <div class="form-row">
-        <div class="form-group"><label>First Name</label><input type="text" placeholder="Patsy"></div>
-        <div class="form-group"><label>Last Name</label><input type="text" placeholder="Grimaldi"></div>
-      </div>
-      <div class="form-row full">
-        <div class="form-group"><label>Email</label><input type="email" placeholder="you@email.com"></div>
-      </div>
-      <div class="form-row full">
-        <div class="form-group"><label>Shipping Address</label><input type="text" placeholder="123 Main St"></div>
-      </div>
-      <div class="form-row">
-        <div class="form-group"><label>City</label><input type="text" placeholder="New York"></div>
-        <div class="form-group"><label>State / ZIP</label><input type="text" placeholder="NY 10001"></div>
-      </div>
-      <div class="form-row full" style="margin-top:0.5rem;">
-        <div class="form-group"><label>Card Number</label><input type="text" placeholder="4242 4242 4242 4242"></div>
-      </div>
-      <div class="form-row">
-        <div class="form-group"><label>Expiry</label><input type="text" placeholder="MM/YY"></div>
-        <div class="form-group"><label>CVV</label><input type="text" placeholder="123"></div>
-      </div>
-      <div class="order-summary" id="frozenOrderSummary" style="margin-top:1rem;"></div>
-      <button class="place-order-btn" onclick="placeFrozenOrder()">Place Frozen Order →</button>
-      <button onclick="closeFrozenModal()" style="width:100%;background:none;border:none;color:var(--muted);padding:10px;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:6px;">Cancel</button>
-    </div>
-    <div class="success-state" id="frozenSuccessState">
-      <div class="success-icon">&#10003;</div>
-      <h2>Order Confirmed!</h2>
-      <p class="order-num" id="frozenOrderNum">#FRZ-0000</p>
-      <p class="est-time">Ships within 1–2 business days</p>
-      <p style="color:var(--muted);font-size:0.85rem;margin-top:1rem;line-height:1.7;">Packed with dry ice. A tracking number will be emailed to you.<br>Bake instructions included in the box.</p>
-      <button onclick="closeFrozenModal()" style="margin-top:1.5rem;background:var(--ember);border:none;color:var(--cream);padding:12px 28px;border-radius:4px;font-family:'DM Sans',sans-serif;font-size:0.9rem;cursor:pointer;">Done</button>
+    <div class="tb-live"><span class="live-dot"></span>Live · <span id="clock">--:-- --</span></div>
+    <div class="tb-divider"></div>
+    <div class="tb-user">
+      <div class="user-avatar">MO</div>
+      <span>Monica</span>
     </div>
   </div>
 </div>
 
-<div class="section-divider"></div>
+<!-- ══════════════════════════════════════════════════ OVERVIEW PANEL -->
+<div class="panel active" id="panel-overview">
 
-<!-- FOOTER -->
-<footer>
-  <div>
-    <p class="footer-brand">Juliana's Pizza</p>
-    <p class="footer-sub">The return of Patsy Grimaldi.<br>Coal-fired, thin crust, no shortcuts.</p>
+  <!-- Alert Bar -->
+  <div class="alert-bar" id="alertBar">
+    <span class="alert-icon">⚠</span>
+    <span class="alert-text"><strong>Price Alert:</strong> Whole milk mozzarella up 14% from Sysco this week ($3.42 → $3.89/lb) · <strong>3 invoices</strong> pending QBO export · Brooklyn labor trending 2.1% over target</span>
+    <button class="alert-dismiss" onclick="document.getElementById('alertBar').style.display='none'">×</button>
   </div>
-  <div class="footer-col">
-    <h4>West Palm Beach</h4>
-    <p>875 N Railroad Ave<br>West Palm Beach, FL 33401<br>(561) 766-6200<br><br>Mon–Fri: 4pm – 9pm<br>Sat–Sun: 12pm – 9pm</p>
-  </div>
-  <div class="footer-col">
-    <h4>Brooklyn</h4>
-    <p>19 Old Fulton St<br>Brooklyn, NY 11201<br><br>Mon–Fri: 4pm – 9pm<br>Sat–Sun: 12pm – 9pm</p>
-  </div>
-</footer>
-<div class="footer-bottom">© 2025 Juliana's Pizza · Proudly serving since 2012 · Demo by Kane PC</div>
 
-<!-- CART DRAWER -->
-<div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
-<div class="cart-drawer" id="cartDrawer">
-  <div class="cart-header">
-    <h2>Your Order</h2>
-    <button class="close-btn" onclick="closeCart()">×</button>
+  <!-- KPI Row -->
+  <div class="kpi-row">
+    <div class="kpi-card" style="--accent:var(--ember)">
+      <div class="kpi-label">Today's Sales · Both</div>
+      <div class="kpi-val">$11,840</div>
+      <div class="kpi-sub">
+        <span class="kpi-delta up">▲ 8.3%</span>
+        <span>vs last Friday</span>
+      </div>
+      <div class="kpi-source">SOURCE: Toast POS · Updated 2 min ago</div>
+    </div>
+    <div class="kpi-card" style="--accent:var(--blue)">
+      <div class="kpi-label">WPB Sales</div>
+      <div class="kpi-val">$4,930</div>
+      <div class="kpi-sub">
+        <span class="kpi-delta up">▲ 12.1%</span>
+        <span>102 covers</span>
+      </div>
+      <div class="kpi-source">SOURCE: Toast POS · WPB Location</div>
+    </div>
+    <div class="kpi-card" style="--accent:var(--blue)">
+      <div class="kpi-label">Brooklyn Sales</div>
+      <div class="kpi-val">$6,910</div>
+      <div class="kpi-sub">
+        <span class="kpi-delta up">▲ 5.8%</span>
+        <span>147 covers</span>
+      </div>
+      <div class="kpi-source">SOURCE: Toast POS · Brooklyn Location</div>
+    </div>
+    <div class="kpi-card" style="--accent:var(--green)">
+      <div class="kpi-label">Food Cost %</div>
+      <div class="kpi-val">26.4%</div>
+      <div class="kpi-sub">
+        <span class="kpi-delta up">✓ Under</span>
+        <span>target 28%</span>
+      </div>
+      <div class="kpi-source">SOURCE: MarginEdge · Period to date</div>
+    </div>
+    <div class="kpi-card" style="--accent:var(--yellow)">
+      <div class="kpi-label">Labor Cost %</div>
+      <div class="kpi-val">31.8%</div>
+      <div class="kpi-sub">
+        <span class="kpi-delta warn">⚠ +1.8%</span>
+        <span>target 30%</span>
+      </div>
+      <div class="kpi-source">SOURCE: Toast Labor · This week</div>
+    </div>
+    <div class="kpi-card" style="--accent:var(--gold)">
+      <div class="kpi-label">Prime Cost</div>
+      <div class="kpi-val">58.2%</div>
+      <div class="kpi-sub">
+        <span class="kpi-delta up">✓ On target</span>
+        <span>target &lt;60%</span>
+      </div>
+      <div class="kpi-source">SOURCE: ME + Toast combined</div>
+    </div>
+    <div class="kpi-card" style="--accent:var(--green)">
+      <div class="kpi-label">Cash Position</div>
+      <div class="kpi-val">$31,240</div>
+      <div class="kpi-sub">
+        <span class="kpi-delta down">▼ $4,200</span>
+        <span>bills due Fri</span>
+      </div>
+      <div class="kpi-source">SOURCE: QuickBooks Online · Live</div>
+    </div>
+    <div class="kpi-card" style="--accent:var(--blue)">
+      <div class="kpi-label">Online + Frozen (All)</div>
+      <div class="kpi-val">$7,600</div>
+      <div class="kpi-sub">
+        <span class="kpi-delta up">▲ 28%</span>
+        <span>DTC + GB + FD</span>
+      </div>
+      <div class="kpi-source">SOURCE: All frozen channels · Live</div>
+    </div>
   </div>
-  <div class="cart-items" id="cartItems">
-    <p class="cart-empty">Your cart is empty.<br>Add something delicious.</p>
+
+  <!-- Row 1: Sales Chart + Location Compare -->
+  <div class="grid-3-1">
+    <!-- Sales Chart -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Weekly Sales <span class="src-badge">Toast POS</span></div>
+        <div style="display:flex;gap:1rem;">
+          <div class="chart-legend">
+            <div class="legend-item"><div class="legend-dot" style="background:var(--ember)"></div>West Palm Beach</div>
+            <div class="legend-item"><div class="legend-dot" style="background:var(--blue)"></div>Brooklyn</div>
+          </div>
+        </div>
+      </div>
+      <div class="chart-wrap">
+        <div class="bar-chart" id="salesChart"></div>
+        <div class="chart-labels" id="chartLabels"></div>
+      </div>
+    </div>
+
+    <!-- Location Compare -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">By Location <span class="src-badge">Toast + ME</span></div>
+      </div>
+      <div class="loc-compare">
+        <div class="loc-col">
+          <div class="loc-col-head">
+            <div class="loc-dot wpb"></div>
+            <div class="loc-name">West Palm</div>
+          </div>
+          <div class="loc-row"><span class="loc-row-label">Sales MTD</span><span class="loc-row-val">$82,400</span></div>
+          <div class="loc-row"><span class="loc-row-label">Avg Ticket</span><span class="loc-row-val">$48.30</span></div>
+          <div class="loc-row"><span class="loc-row-label">Covers MTD</span><span class="loc-row-val">1,706</span></div>
+          <div class="loc-row"><span class="loc-row-label">Food Cost</span><span class="loc-row-val good">24.8%</span></div>
+          <div class="loc-row"><span class="loc-row-label">Labor</span><span class="loc-row-val warn">30.4%</span></div>
+          <div class="loc-row"><span class="loc-row-label">Online Orders</span><span class="loc-row-val">314</span></div>
+        </div>
+        <div class="loc-col">
+          <div class="loc-col-head">
+            <div class="loc-dot bk"></div>
+            <div class="loc-name">Brooklyn</div>
+          </div>
+          <div class="loc-row"><span class="loc-row-label">Sales MTD</span><span class="loc-row-val">$118,600</span></div>
+          <div class="loc-row"><span class="loc-row-label">Avg Ticket</span><span class="loc-row-val">$52.10</span></div>
+          <div class="loc-row"><span class="loc-row-label">Covers MTD</span><span class="loc-row-val">2,276</span></div>
+          <div class="loc-row"><span class="loc-row-label">Food Cost</span><span class="loc-row-val good">27.6%</span></div>
+          <div class="loc-row"><span class="loc-row-label">Labor</span><span class="loc-row-val bad">33.1%</span></div>
+          <div class="loc-row"><span class="loc-row-label">Online Orders</span><span class="loc-row-val">221</span></div>
+        </div>
+      </div>
+    </div>
   </div>
-  <div class="cart-footer" id="cartFooter" style="display:none;">
-    <div class="subtotal-row"><span>Subtotal</span><span id="cartSubtotal">$0.00</span></div>
-    <div class="subtotal-row"><span>Tax (7%)</span><span id="cartTax">$0.00</span></div>
-    <div class="total-row"><span>Total</span><span id="cartTotal">$0.00</span></div>
-    <button class="checkout-btn" onclick="openCheckout()">Proceed to Checkout →</button>
+
+  <!-- Row 2: Cost Breakdown + Pending Invoices + Activity -->
+  <div class="grid-3">
+    <!-- Cost Breakdown -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Cost Breakdown <span class="src-badge">MarginEdge</span></div>
+        <button class="card-action">View Detail →</button>
+      </div>
+      <div class="card-body">
+        <div class="prog-row">
+          <div class="prog-label"><span>Mozzarella (all)</span><span>$4,820 · 38%</span></div>
+          <div class="prog-track"><div class="prog-fill yellow" style="width:38%"></div></div>
+        </div>
+        <div class="prog-row">
+          <div class="prog-label"><span>Dough / Flour</span><span>$1,940 · 15%</span></div>
+          <div class="prog-track"><div class="prog-fill green" style="width:15%"></div></div>
+        </div>
+        <div class="prog-row">
+          <div class="prog-label"><span>San Marzano Tomato</span><span>$1,540 · 12%</span></div>
+          <div class="prog-track"><div class="prog-fill green" style="width:12%"></div></div>
+        </div>
+        <div class="prog-row">
+          <div class="prog-label"><span>Proteins (sausage, etc)</span><span>$2,180 · 17%</span></div>
+          <div class="prog-track"><div class="prog-fill ember" style="width:17%"></div></div>
+        </div>
+        <div class="prog-row">
+          <div class="prog-label"><span>Produce & Herbs</span><span>$840 · 7%</span></div>
+          <div class="prog-track"><div class="prog-fill blue" style="width:7%"></div></div>
+        </div>
+        <div class="prog-row">
+          <div class="prog-label"><span>Beverages</span><span>$1,140 · 9%</span></div>
+          <div class="prog-track"><div class="prog-fill blue" style="width:9%"></div></div>
+        </div>
+        <div class="prog-row">
+          <div class="prog-label"><span>Other</span><span>$280 · 2%</span></div>
+          <div class="prog-track"><div class="prog-fill" style="width:2%;background:var(--dim)"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pending Invoices -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Pending Invoices <span class="src-badge">MarginEdge → QBO</span></div>
+        <button class="card-action">View All →</button>
+      </div>
+      <div class="card-body" style="padding:0">
+        <table class="data-table">
+          <thead>
+            <tr><th>Vendor</th><th>Amount</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><div>Sysco Foods</div><div class="muted" style="font-size:0.65rem">WPB · 5/6/26</div></td>
+              <td class="mono">$2,840</td>
+              <td><span class="status-pill pending">Needs Map</span></td>
+            </tr>
+            <tr>
+              <td><div>US Foods</div><div class="muted" style="font-size:0.65rem">Brooklyn · 5/5/26</div></td>
+              <td class="mono">$1,620</td>
+              <td><span class="status-pill ready">Ready</span></td>
+            </tr>
+            <tr>
+              <td><div>DiCicco Cheese</div><div class="muted" style="font-size:0.65rem">Both · 5/4/26</div></td>
+              <td class="mono">$3,410</td>
+              <td><span class="status-pill pending">Pending</span></td>
+            </tr>
+            <tr>
+              <td><div>Empire Meats</div><div class="muted" style="font-size:0.65rem">Brooklyn · 5/3/26</div></td>
+              <td class="mono">$980</td>
+              <td><span class="status-pill paid">Sent QBO</span></td>
+            </tr>
+            <tr>
+              <td><div>Stanislaus (Tomato)</div><div class="muted" style="font-size:0.65rem">WPB · 5/2/26</div></td>
+              <td class="mono">$640</td>
+              <td><span class="status-pill paid">Sent QBO</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Activity Feed -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Live Activity <span class="src-badge">All Systems</span></div>
+      </div>
+      <div class="card-body">
+        <div class="activity-item">
+          <div class="act-icon order">🍕</div>
+          <div class="act-body">
+            <div class="act-text">Online order #WPB-1842 · Margherita + White Pie + Caesar · $71</div>
+            <div class="act-time">2 min ago · WPB Pickup</div>
+          </div>
+        </div>
+        <div class="activity-item">
+          <div class="act-icon frozen">🛒</div>
+          <div class="act-body">
+            <div class="act-text">Goldbelly order #GB-84821 · 2× Margherita to Austin TX · tracking auto-uploaded via Extensiv</div>
+            <div class="act-time">8 min ago · Goldbelly → Extensiv API</div>
+          </div>
+        </div>
+        <div class="activity-item">
+          <div class="act-icon frozen">❄</div>
+          <div class="act-body">
+            <div class="act-text">Frozen order #FRZ-0291 · 2× Margherita shipped to 33401 · $58.97</div>
+            <div class="act-time">14 min ago · FedEx 2-day</div>
+          </div>
+        </div>
+        <div class="activity-item">
+          <div class="act-icon alert">⚠</div>
+          <div class="act-body">
+            <div class="act-text">Price alert: Whole milk mozzarella +14% on Sysco invoice — $0.47/lb increase</div>
+            <div class="act-time">1 hr ago · MarginEdge</div>
+          </div>
+        </div>
+        <div class="activity-item">
+          <div class="act-icon invoice">📄</div>
+          <div class="act-body">
+            <div class="act-text">Sysco invoice $2,840 processed — pending vendor mapping in QBO</div>
+            <div class="act-time">2 hrs ago · MarginEdge</div>
+          </div>
+        </div>
+        <div class="activity-item">
+          <div class="act-icon payment">✓</div>
+          <div class="act-body">
+            <div class="act-text">Empire Meats $980 exported to QuickBooks Online successfully</div>
+            <div class="act-time">3 hrs ago · ME → QBO</div>
+          </div>
+        </div>
+        <div class="activity-item">
+          <div class="act-icon order">🍕</div>
+          <div class="act-body">
+            <div class="act-text">Online order #BK-0447 · 3× Meatball — 5-pie limit enforced, 2 added to phone queue</div>
+            <div class="act-time">4 hrs ago · Brooklyn</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Row 3: Online + Frozen + Bills + Price Movers -->
+  <div class="grid-2">
+    <!-- Online + Frozen Orders -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Ordering Revenue <span class="src-badge">Juliana's Platform</span></div>
+      </div>
+      <div class="mini-stats">
+        <div class="mini-stat">
+          <div class="mini-stat-val">$1,640</div>
+          <div class="mini-stat-label">Local Online · Today</div>
+        </div>
+        <div class="mini-stat">
+          <div class="mini-stat-val">$1,200</div>
+          <div class="mini-stat-label">Frozen DTC · Today</div>
+        </div>
+        <div class="mini-stat">
+          <div class="mini-stat-val">38</div>
+          <div class="mini-stat-label">Online Orders · Today</div>
+        </div>
+        <div class="mini-stat">
+          <div class="mini-stat-val">55</div>
+          <div class="mini-stat-label">Frozen Units · This Week</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="prog-row" style="margin-top:0.25rem">
+          <div class="prog-label"><span>Monthly Online Goal</span><span>$38,400 / $50k</span></div>
+          <div class="prog-track"><div class="prog-fill ember" style="width:77%"></div></div>
+        </div>
+        <div class="prog-row">
+          <div class="prog-label"><span>Monthly Frozen Goal</span><span>$14,200 / $25k</span></div>
+          <div class="prog-track"><div class="prog-fill blue" style="width:57%"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Price Movers + Bills -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Price Movers <span class="src-badge">MarginEdge</span></div>
+        <button class="card-action">All items →</button>
+      </div>
+      <div class="card-body">
+        <div class="price-mover">
+          <div>
+            <div class="pm-item">Whole Milk Mozzarella</div>
+            <div class="pm-vendor">Sysco · WPB + BK</div>
+          </div>
+          <span class="pm-change up">▲ +14.0%</span>
+        </div>
+        <div class="price-mover">
+          <div>
+            <div class="pm-item">Italian Sausage (bulk)</div>
+            <div class="pm-vendor">Empire Meats · Brooklyn</div>
+          </div>
+          <span class="pm-change up">▲ +6.2%</span>
+        </div>
+        <div class="price-mover">
+          <div>
+            <div class="pm-item">00 Flour (50lb bag)</div>
+            <div class="pm-vendor">US Foods · Both</div>
+          </div>
+          <span class="pm-change dn">▼ -2.8%</span>
+        </div>
+        <div class="price-mover">
+          <div>
+            <div class="pm-item">San Marzano Tomatoes</div>
+            <div class="pm-vendor">Stanislaus · WPB</div>
+          </div>
+          <span class="pm-change dn">▼ -1.1%</span>
+        </div>
+        <div class="price-mover">
+          <div>
+            <div class="pm-item">Prosciutto di Parma</div>
+            <div class="pm-vendor">DiCicco · Both</div>
+          </div>
+          <span class="pm-change up">▲ +4.5%</span>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
-<!-- CHECKOUT MODAL -->
-<div class="modal-overlay" id="checkoutModal">
-  <div class="modal">
-    <div id="checkoutForm">
-      <h2>Checkout</h2>
-      <p class="modal-sub">Order from Juliana's — <span id="checkoutLocation">West Palm Beach</span></p>
+<!-- ══════════════════════════════════════════════════ SALES PANEL -->
+<div class="panel" id="panel-sales">
+  <div class="section-hd"><h2>Sales Detail</h2><span>Toast POS · Both Locations</span></div>
 
-      <div class="order-type-tabs">
-        <button class="ot-btn active" onclick="setOrderType('pickup', this)">Pickup</button>
-        <button class="ot-btn" onclick="setOrderType('delivery', this)">Delivery</button>
+  <div class="kpi-row" style="grid-template-columns:repeat(4,1fr)">
+    <div class="kpi-card" style="--accent:var(--ember)">
+      <div class="kpi-label">Month to Date</div>
+      <div class="kpi-val">$201,000</div>
+      <div class="kpi-sub"><span class="kpi-delta up">▲ 11.2%</span><span>vs May 2025</span></div>
+      <div class="kpi-source">SOURCE: Toast POS · Combined</div>
+    </div>
+    <div class="kpi-card" style="--accent:var(--gold)">
+      <div class="kpi-label">Avg Daily Sales</div>
+      <div class="kpi-val">$10,050</div>
+      <div class="kpi-sub"><span class="kpi-delta up">▲ 8.4%</span><span>8-day avg</span></div>
+      <div class="kpi-source">SOURCE: Toast POS</div>
+    </div>
+    <div class="kpi-card" style="--accent:var(--blue)">
+      <div class="kpi-label">Total Covers MTD</div>
+      <div class="kpi-val">3,982</div>
+      <div class="kpi-sub"><span class="kpi-delta up">▲ 9.1%</span><span>YoY</span></div>
+      <div class="kpi-source">SOURCE: Toast POS</div>
+    </div>
+    <div class="kpi-card" style="--accent:var(--green)">
+      <div class="kpi-label">Avg Check Size</div>
+      <div class="kpi-val">$50.48</div>
+      <div class="kpi-sub"><span class="kpi-delta up">▲ $2.10</span><span>vs last month</span></div>
+      <div class="kpi-source">SOURCE: Toast POS</div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-header"><div class="card-title">Top Selling Items · WPB <span class="src-badge">Toast PMIX</span></div></div>
+      <div class="card-body" style="padding:0">
+        <table class="data-table">
+          <thead><tr><th>Item</th><th>Qty</th><th>Revenue</th><th>% Menu</th></tr></thead>
+          <tbody>
+            <tr><td>Margherita Pizza</td><td class="mono">842</td><td class="mono">$18,524</td><td class="mono">22.5%</td></tr>
+            <tr><td>Meatball Pizza</td><td class="mono">614</td><td class="mono">$14,736</td><td class="mono">16.4%</td></tr>
+            <tr><td>White Pie</td><td class="mono">489</td><td class="mono">$11,247</td><td class="mono">13.1%</td></tr>
+            <tr><td>Prosciutto & Arugula</td><td class="mono">322</td><td class="mono">$8,372</td><td class="mono">8.6%</td></tr>
+            <tr><td>Sausage & Peppers</td><td class="mono">298</td><td class="mono">$7,450</td><td class="mono">8.0%</td></tr>
+            <tr><td>Pistachio Ring Dings</td><td class="mono">481</td><td class="mono">$4,810</td><td class="mono">12.9%</td></tr>
+            <tr><td>Caesar Salad</td><td class="mono">267</td><td class="mono">$4,005</td><td class="mono">7.2%</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">Top Selling Items · Brooklyn <span class="src-badge">Toast PMIX</span></div></div>
+      <div class="card-body" style="padding:0">
+        <table class="data-table">
+          <thead><tr><th>Item</th><th>Qty</th><th>Revenue</th><th>% Menu</th></tr></thead>
+          <tbody>
+            <tr><td>Margherita Pizza</td><td class="mono">1,204</td><td class="mono">$26,488</td><td class="mono">24.1%</td></tr>
+            <tr><td>Meatball Pizza</td><td class="mono">880</td><td class="mono">$21,120</td><td class="mono">17.6%</td></tr>
+            <tr><td>White Pie</td><td class="mono">612</td><td class="mono">$14,076</td><td class="mono">12.3%</td></tr>
+            <tr><td>Wild Mushroom</td><td class="mono">490</td><td class="mono">$11,270</td><td class="mono">9.8%</td></tr>
+            <tr><td>Prosciutto & Arugula</td><td class="mono">440</td><td class="mono">$11,440</td><td class="mono">8.8%</td></tr>
+            <tr><td>Pistachio Ring Dings</td><td class="mono">720</td><td class="mono">$7,200</td><td class="mono">14.4%</td></tr>
+            <tr><td>House Red Wine</td><td class="mono">560</td><td class="mono">$6,720</td><td class="mono">11.2%</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="card-title">Hourly Sales Heatmap — Today <span class="src-badge">Toast POS</span></div></div>
+    <div class="card-body">
+      <div style="display:grid;grid-template-columns:repeat(14,1fr);gap:4px;margin-top:0.25rem">
+        <div style="text-align:center"><div style="height:30px;background:var(--surface3);border-radius:3px;margin-bottom:3px"></div><div style="font-size:0.55rem;color:var(--muted)">11a</div></div>
+        <div style="text-align:center"><div style="height:38px;background:rgba(224,92,42,0.3);border-radius:3px;margin-bottom:3px"></div><div style="font-size:0.55rem;color:var(--muted)">12p</div></div>
+        <div style="text-align:center"><div style="height:52px;background:rgba(224,92,42,0.5);border-radius:3px;margin-bottom:3px"></div><div style="font-size:0.55rem;color:var(--muted)">1p</div></div>
+        <div style="text-align:center"><div style="height:40px;background:rgba(224,92,42,0.35);border-radius:3px;margin-bottom:3px"></div><div style="font-size:0.55rem;color:var(--muted)">2p</div></div>
+        <div style="text-align:center"><div style="height:22px;background:rgba(224,92,42,0.2);border-radius:3px;margin-bottom:3px"></div><div style="font-size:0.55rem;color:var(--muted)">3p</div></div>
+        <div style="text-align:center"><div style="height:18px;background:rgba(224,92,42,0.15);border-radius:3px;margin-bottom:3px"></div><div style="font-size:0.55rem;color:var(--muted)">4p</div></div>
+        <div style="text-align:center"><div style="height:62px;background:rgba(224,92,42,0.6);border-radius:3px;margin-bottom:3px"></div><div style="font-size:0.55rem;color:var(--muted)">5p</div></div>
+        <div style="text-align:center"><div style="height:90px;background:rgba(224,92,42,0.85);border-radius:3px;margin-bottom:3px"></div><div style="font-size:0.55rem;color:var(--muted)">6p</div></div>
+        <div style="text-align:center"><div style="height:100px;background:var(--ember);border-radius:3px;margin-bottom:3px;box-shadow:0 0 8px rgba(224,92,42,0.4)"></div><div style="font-size:0.55rem;color:var(--muted)">7p</div></div>
+        <div style="text-align:center"><div style="height:88px;background:rgba(224,92,42,0.8);border-radius:3px;margin-bottom:3px"></div><div style="font-size:0.55rem;color:var(--muted)">8p</div></div>
+        <div style="text-align:center"><div style="height:70px;background:rgba(224,92,42,0.65);border-radius:3px;margin-bottom:3px"></div><div style="font-size:0.55rem;color:var(--muted)">9p</div></div>
+        <div style="text-align:center"><div style="height:40px;background:rgba(224,92,42,0.35);border-radius:3px;margin-bottom:3px"></div><div style="font-size:0.55rem;color:var(--muted)">10p</div></div>
+        <div style="text-align:center"><div style="height:20px;background:rgba(224,92,42,0.18);border-radius:3px;margin-bottom:3px"></div><div style="font-size:0.55rem;color:var(--muted)">11p</div></div>
+        <div style="text-align:center"><div style="height:8px;background:rgba(224,92,42,0.08);border-radius:3px;margin-bottom:3px"></div><div style="font-size:0.55rem;color:var(--muted)">12a</div></div>
+      </div>
+      <div style="font-size:0.68rem;color:var(--muted);margin-top:0.75rem">Peak hour: 7pm · $2,140 revenue · 44 covers · Combined both locations</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════ COSTS PANEL -->
+<div class="panel" id="panel-costs">
+  <div class="section-hd"><h2>Food Cost & Inventory</h2><span>MarginEdge · Both Locations</span></div>
+
+  <div class="kpi-row" style="grid-template-columns:repeat(4,1fr)">
+    <div class="kpi-card" style="--accent:var(--green)">
+      <div class="kpi-label">Actual Food Cost %</div>
+      <div class="kpi-val">26.4%</div>
+      <div class="kpi-sub"><span class="kpi-delta up">✓ Under budget</span></div>
+      <div class="kpi-source">SOURCE: MarginEdge · PTD</div>
+    </div>
+    <div class="kpi-card" style="--accent:var(--blue)">
+      <div class="kpi-label">Theoretical Cost %</div>
+      <div class="kpi-val">24.1%</div>
+      <div class="kpi-sub"><span class="kpi-delta warn">+2.3% variance</span><span>waste/theft</span></div>
+      <div class="kpi-source">SOURCE: MarginEdge PMIX</div>
+    </div>
+    <div class="kpi-card" style="--accent:var(--yellow)">
+      <div class="kpi-label">Invoices This Week</div>
+      <div class="kpi-val">$14,280</div>
+      <div class="kpi-sub"><span class="kpi-delta up">▲ 8.2%</span><span>vs last week</span></div>
+      <div class="kpi-source">SOURCE: MarginEdge</div>
+    </div>
+    <div class="kpi-card" style="--accent:var(--red)">
+      <div class="kpi-label">Price Alerts Active</div>
+      <div class="kpi-val">3</div>
+      <div class="kpi-sub"><span>items above threshold</span></div>
+      <div class="kpi-source">SOURCE: MarginEdge Alerts</div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-header"><div class="card-title">Invoices This Period <span class="src-badge">MarginEdge</span></div></div>
+      <div class="card-body" style="padding:0">
+        <table class="data-table">
+          <thead><tr><th>Vendor</th><th>Location</th><th>Amount</th><th>Date</th><th>QBO Status</th></tr></thead>
+          <tbody>
+            <tr><td>Sysco Foods</td><td class="muted">WPB</td><td class="mono">$2,840</td><td class="mono muted">5/6</td><td><span class="status-pill pending">Needs Map</span></td></tr>
+            <tr><td>US Foods</td><td class="muted">BK</td><td class="mono">$1,620</td><td class="mono muted">5/5</td><td><span class="status-pill ready">Ready</span></td></tr>
+            <tr><td>DiCicco Cheese</td><td class="muted">Both</td><td class="mono">$3,410</td><td class="mono muted">5/4</td><td><span class="status-pill pending">Pending</span></td></tr>
+            <tr><td>Empire Meats</td><td class="muted">BK</td><td class="mono">$980</td><td class="mono muted">5/3</td><td><span class="status-pill paid">Sent QBO</span></td></tr>
+            <tr><td>Stanislaus</td><td class="muted">WPB</td><td class="mono">$640</td><td class="mono muted">5/2</td><td><span class="status-pill paid">Sent QBO</span></td></tr>
+            <tr><td>Baldor Specialty</td><td class="muted">BK</td><td class="mono">$890</td><td class="mono muted">5/1</td><td><span class="status-pill paid">Sent QBO</span></td></tr>
+            <tr><td>Sysco Foods</td><td class="muted">BK</td><td class="mono">$3,900</td><td class="mono muted">4/29</td><td><span class="status-pill paid">Sent QBO</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">Inventory Status <span class="src-badge">MarginEdge</span></div></div>
+      <div class="card-body" style="padding:0">
+        <table class="data-table">
+          <thead><tr><th>Item</th><th>On Hand</th><th>Par</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td>Whole Milk Mozz (WPB)</td><td class="mono">28 lbs</td><td class="mono">40 lbs</td><td><span class="status-pill pending">Low</span></td></tr>
+            <tr><td>Whole Milk Mozz (BK)</td><td class="mono">52 lbs</td><td class="mono">60 lbs</td><td><span class="status-pill pending">Low</span></td></tr>
+            <tr><td>00 Flour (WPB)</td><td class="mono">4 bags</td><td class="mono">3 bags</td><td><span class="status-pill ready">OK</span></td></tr>
+            <tr><td>00 Flour (BK)</td><td class="mono">6 bags</td><td class="mono">4 bags</td><td><span class="status-pill ready">OK</span></td></tr>
+            <tr><td>San Marzano Tomato</td><td class="mono">24 cans</td><td class="mono">20 cans</td><td><span class="status-pill ready">OK</span></td></tr>
+            <tr><td>Italian Sausage (BK)</td><td class="mono">12 lbs</td><td class="mono">20 lbs</td><td><span class="status-pill error">Order Now</span></td></tr>
+            <tr><td>Prosciutto di Parma</td><td class="mono">8 lbs</td><td class="mono">10 lbs</td><td><span class="status-pill pending">Low</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════ ORDERING PANEL -->
+<div class="panel" id="panel-ordering">
+  <div class="section-hd"><h2>Online & Frozen Orders</h2><span>All Channels · Live</span></div>
+
+  <!-- KPI row -->
+  <div class="kpi-row" style="grid-template-columns:repeat(6,1fr)">
+    <div class="kpi-card" style="--accent:var(--ember)">
+      <div class="kpi-label">Local Orders Today</div>
+      <div class="kpi-val">38</div>
+      <div class="kpi-sub"><span class="kpi-delta up">▲ 22%</span><span>vs last Fri</span></div>
+      <div class="kpi-source">Juliana's App · Toast API</div>
+    </div>
+    <div class="kpi-card" style="--accent:var(--ember)">
+      <div class="kpi-label">Local Revenue Today</div>
+      <div class="kpi-val">$1,640</div>
+      <div class="kpi-sub"><span class="kpi-delta up">▲ 18%</span><span>avg $43/order</span></div>
+      <div class="kpi-source">5-pie cap: 4 triggers today</div>
+    </div>
+    <div class="kpi-card" style="--accent:var(--blue)">
+      <div class="kpi-label">DTC Frozen · Week</div>
+      <div class="kpi-val">$1,200</div>
+      <div class="kpi-sub"><span class="kpi-delta up">▲ 34%</span><span>55 units</span></div>
+      <div class="kpi-source">Juliana's Platform · Direct</div>
+    </div>
+    <div class="kpi-card" style="--accent:var(--gold)">
+      <div class="kpi-label">Goldbelly · Week</div>
+      <div class="kpi-val">$3,840</div>
+      <div class="kpi-sub"><span class="kpi-delta up">▲ 19%</span><span>128 units</span></div>
+      <div class="kpi-source">Via Extensiv API · Synced</div>
+    </div>
+    <div class="kpi-card" style="--accent:var(--muted)">
+      <div class="kpi-label">FreshDirect · Week</div>
+      <div class="kpi-val">$920</div>
+      <div class="kpi-sub"><span class="kpi-delta up">~32 units</span><span>wholesale</span></div>
+      <div class="kpi-source">Manual sync · Lower margin</div>
+    </div>
+    <div class="kpi-card" style="--accent:var(--green)">
+      <div class="kpi-label">All Frozen · Week</div>
+      <div class="kpi-val">$5,960</div>
+      <div class="kpi-sub"><span class="kpi-delta up">▲ 24%</span><span>215 total units</span></div>
+      <div class="kpi-source">Combined all channels</div>
+    </div>
+  </div>
+
+  <!-- Channel comparison -->
+  <div class="card" style="margin-bottom:1.25rem">
+    <div class="card-header">
+      <div class="card-title">Frozen Channel Comparison — This Week <span class="src-badge">All Platforms</span></div>
+      <div style="font-size:0.68rem;color:var(--muted)">Revenue · Units · Margin · Integration Status</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--border)">
+
+      <!-- DTC -->
+      <div style="background:var(--surface);padding:1.25rem">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:1rem">
+          <div style="width:10px;height:10px;border-radius:2px;background:var(--blue)"></div>
+          <span style="font-size:0.8rem;font-weight:500">Direct-to-Consumer</span>
+          <span class="status-pill ready" style="margin-left:auto">Live</span>
+        </div>
+        <div class="loc-row"><span class="loc-row-label">Revenue · Week</span><span class="loc-row-val">$1,200</span></div>
+        <div class="loc-row"><span class="loc-row-label">Units shipped</span><span class="loc-row-val">55</span></div>
+        <div class="loc-row"><span class="loc-row-label">Avg order value</span><span class="loc-row-val">$43.64</span></div>
+        <div class="loc-row"><span class="loc-row-label">Gross margin</span><span class="loc-row-val good">~62%</span></div>
+        <div class="loc-row"><span class="loc-row-label">Integration</span><span class="loc-row-val" style="color:var(--blue)">Our Platform</span></div>
+        <div class="loc-row"><span class="loc-row-label">Fulfillment</span><span class="loc-row-val">Juliana's / 3PL</span></div>
+        <div style="margin-top:0.75rem;padding:8px;background:var(--blue-dim);border-radius:4px;font-size:0.7rem;color:var(--muted);line-height:1.5">
+          ✓ Full control · best margin · customer owns relationship
+        </div>
       </div>
 
-      <div class="form-row">
-        <div class="form-group">
-          <label>First Name</label>
-          <input type="text" placeholder="Patsy" id="fname">
+      <!-- Goldbelly -->
+      <div style="background:var(--surface);padding:1.25rem">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:1rem">
+          <div style="width:10px;height:10px;border-radius:2px;background:var(--gold)"></div>
+          <span style="font-size:0.8rem;font-weight:500">Goldbelly</span>
+          <span class="status-pill ready" style="margin-left:auto">Connected</span>
         </div>
-        <div class="form-group">
-          <label>Last Name</label>
-          <input type="text" placeholder="Grimaldi" id="lname">
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>Phone</label>
-          <input type="tel" placeholder="(561) 555-0100" id="phone">
-        </div>
-        <div class="form-group">
-          <label>Email</label>
-          <input type="email" placeholder="you@email.com" id="email">
+        <div class="loc-row"><span class="loc-row-label">Revenue · Week</span><span class="loc-row-val">$3,840</span></div>
+        <div class="loc-row"><span class="loc-row-label">Units shipped</span><span class="loc-row-val">128</span></div>
+        <div class="loc-row"><span class="loc-row-label">Avg order value</span><span class="loc-row-val">$30.00</span></div>
+        <div class="loc-row"><span class="loc-row-label">Gross margin</span><span class="loc-row-val warn">~38%</span></div>
+        <div class="loc-row"><span class="loc-row-label">Integration</span><span class="loc-row-val" style="color:var(--gold)">Extensiv API</span></div>
+        <div class="loc-row"><span class="loc-row-label">Tracking sync</span><span class="loc-row-val good">Auto ✓</span></div>
+        <div style="margin-top:0.75rem;padding:8px;background:var(--gold-dim);border-radius:4px;font-size:0.7rem;color:var(--muted);line-height:1.5">
+          ✓ High volume · national audience · lower margin · Goldbelly owns customer
         </div>
       </div>
 
-      <div id="deliveryFields" style="display:none;">
-        <div class="form-row full">
-          <div class="form-group">
-            <label>Delivery Address</label>
-            <input type="text" placeholder="123 Main St, West Palm Beach, FL">
+      <!-- FreshDirect -->
+      <div style="background:var(--surface);padding:1.25rem">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:1rem">
+          <div style="width:10px;height:10px;border-radius:2px;background:var(--dim)"></div>
+          <span style="font-size:0.8rem;font-weight:500">FreshDirect</span>
+          <span class="status-pill pending" style="margin-left:auto">Manual</span>
+        </div>
+        <div class="loc-row"><span class="loc-row-label">Revenue · Week</span><span class="loc-row-val">$920</span></div>
+        <div class="loc-row"><span class="loc-row-label">Units shipped</span><span class="loc-row-val">~32</span></div>
+        <div class="loc-row"><span class="loc-row-label">Avg order value</span><span class="loc-row-val">$28.75</span></div>
+        <div class="loc-row"><span class="loc-row-label">Gross margin</span><span class="loc-row-val bad">~28%</span></div>
+        <div class="loc-row"><span class="loc-row-label">Integration</span><span class="loc-row-val" style="color:var(--muted)">No API · Manual</span></div>
+        <div class="loc-row"><span class="loc-row-label">Exclusivity</span><span class="loc-row-val warn">⚠ Verify clause</span></div>
+        <div style="margin-top:0.75rem;padding:8px;background:var(--yellow-dim);border-radius:4px;font-size:0.7rem;color:var(--muted);line-height:1.5">
+          ⚠ Lowest margin · no API · review exclusivity clause before scaling DTC
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <!-- Local orders -->
+    <div class="card">
+      <div class="card-header"><div class="card-title">Recent Local Orders <span class="src-badge">Juliana's App → Toast</span></div></div>
+      <div class="card-body" style="padding:0">
+        <table class="data-table">
+          <thead><tr><th>Order</th><th>Items</th><th>Total</th><th>Type</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td class="mono">#WPB-1842</td><td>Margherita + White Pie</td><td class="mono">$71</td><td class="muted">Pickup</td><td><span class="status-pill prep">In Kitchen</span></td></tr>
+            <tr><td class="mono">#WPB-1841</td><td>2× Meatball + Caesar</td><td class="mono">$94</td><td class="muted">Delivery</td><td><span class="status-pill shipped">Out for Del.</span></td></tr>
+            <tr><td class="mono">#BK-0447</td><td>3× Margherita</td><td class="mono">$66</td><td class="muted">Pickup</td><td><span class="status-pill ready">Ready</span></td></tr>
+            <tr><td class="mono">#WPB-1840</td><td>Prosciutto + Arugula Salad</td><td class="mono">$68</td><td class="muted">Pickup</td><td><span class="status-pill paid">Complete</span></td></tr>
+            <tr><td class="mono">#BK-0446</td><td>4× White Pie</td><td class="mono">$92</td><td class="muted">Delivery</td><td><span class="status-pill paid">Complete</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Goldbelly orders -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Goldbelly Orders <span class="src-badge">Extensiv API · Auto-sync</span></div>
+        <div style="font-size:0.65rem;color:var(--gold)">Merchant API Key · Connected</div>
+      </div>
+      <div class="card-body" style="padding:0">
+        <table class="data-table">
+          <thead><tr><th>Order</th><th>SKU</th><th>Ship To</th><th>Goldbelly $</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td class="mono">#GB-84821</td><td>2× Margherita</td><td class="muted">Austin, TX</td><td class="mono">$59.98</td><td><span class="status-pill shipped">Tracking Sent</span></td></tr>
+            <tr><td class="mono">#GB-84820</td><td>1× Pepperoni</td><td class="muted">Chicago, IL</td><td class="mono">$29.99</td><td><span class="status-pill shipped">Tracking Sent</span></td></tr>
+            <tr><td class="mono">#GB-84819</td><td>2× Margherita</td><td class="muted">Seattle, WA</td><td class="mono">$59.98</td><td><span class="status-pill prep">Packing</span></td></tr>
+            <tr><td class="mono">#GB-84817</td><td>3× Pepperoni</td><td class="muted">Miami, FL</td><td class="mono">$89.97</td><td><span class="status-pill paid">Delivered</span></td></tr>
+            <tr><td class="mono">#GB-84815</td><td>1× Margherita</td><td class="muted">Denver, CO</td><td class="mono">$29.99</td><td><span class="status-pill paid">Delivered</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="padding:10px 1.1rem;border-top:1px solid var(--border);font-size:0.7rem;color:var(--muted)">
+        Inventory sync ✓ · Tracking auto-uploaded to Goldbelly · Order cancellations synced · Via Extensiv Integration Manager
+      </div>
+    </div>
+  </div>
+
+  <!-- DTC orders -->
+  <div class="card">
+    <div class="card-header"><div class="card-title">Direct-to-Consumer Frozen Orders <span class="src-badge">Juliana's Platform</span></div></div>
+    <div class="card-body" style="padding:0">
+      <table class="data-table">
+        <thead><tr><th>Order</th><th>SKUs</th><th>Ship To</th><th>Total</th><th>Carrier</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">#FRZ-0291</td><td>2× Margherita</td><td class="muted">33401 · WPB, FL</td><td class="mono">$58.97</td><td class="muted">FedEx 2-day</td><td><span class="status-pill shipped">Shipped</span></td></tr>
+          <tr><td class="mono">#FRZ-0290</td><td>1× Marg + 1× Pep</td><td class="muted">10001 · NYC</td><td class="mono">$44.98</td><td class="muted">FedEx 2-day</td><td><span class="status-pill shipped">Shipped</span></td></tr>
+          <tr><td class="mono">#FRZ-0289</td><td>3× Pepperoni</td><td class="muted">90210 · LA, CA</td><td class="mono">$93.96</td><td class="muted">FedEx 2-day</td><td><span class="status-pill prep">Packing</span></td></tr>
+          <tr><td class="mono">#FRZ-0288</td><td>2× Margherita</td><td class="muted">60601 · Chicago</td><td class="mono">$62.97</td><td class="muted">UPS 2-day</td><td><span class="status-pill paid">Delivered</span></td></tr>
+          <tr><td class="mono">#FRZ-0287</td><td>4× Margherita</td><td class="muted">33131 · Miami, FL</td><td class="mono">$101.95</td><td class="muted">FedEx 2-day</td><td><span class="status-pill paid">Delivered</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════ FINANCIALS PANEL -->
+<div class="panel" id="panel-financials">
+  <div class="section-hd"><h2>Financial Summary</h2><span>QuickBooks Online · MarginEdge · Live Sync</span></div>
+
+  <div class="kpi-row" style="grid-template-columns:repeat(4,1fr)">
+    <div class="kpi-card" style="--accent:var(--green)">
+      <div class="kpi-label">Cash Position · All Accounts</div>
+      <div class="kpi-val">$67,600</div>
+      <div class="kpi-sub"><span class="kpi-source" style="margin:0">Chase Bank Feed · 4 accounts · Synced today</span></div>
+    </div>
+    <div class="kpi-card" style="--accent:var(--yellow)">
+      <div class="kpi-label">A/P Outstanding</div>
+      <div class="kpi-val">$8,490</div>
+      <div class="kpi-sub"><span class="kpi-delta warn">$4,200 due Fri</span></div>
+      <div class="kpi-source">SOURCE: QBO via MarginEdge</div>
+    </div>
+    <div class="kpi-card" style="--accent:var(--ember)">
+      <div class="kpi-label">Revenue MTD</div>
+      <div class="kpi-val">$204,000</div>
+      <div class="kpi-sub"><span class="kpi-delta up">▲ 11.2%</span><span>YoY</span></div>
+      <div class="kpi-source">SOURCE: QBO · All channels</div>
+    </div>
+    <div class="kpi-card" style="--accent:var(--green)">
+      <div class="kpi-label">Controllable Profit</div>
+      <div class="kpi-val">$38,200</div>
+      <div class="kpi-sub"><span class="kpi-delta up">18.7% margin</span></div>
+      <div class="kpi-source">SOURCE: MarginEdge P&L</div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-header"><div class="card-title">Controllable P&L — MTD <span class="src-badge">MarginEdge</span></div></div>
+      <div class="card-body">
+        <div class="qbo-rows">
+          <div class="qbo-row"><span class="qbo-row-label">Total Sales (both locations)</span><span class="qbo-row-val">$204,000</span></div>
+          <div class="qbo-row"><span class="qbo-row-label">Cost of Goods (food cost)</span><span class="qbo-row-val" style="color:var(--red)">− $53,856</span></div>
+          <div class="qbo-row"><span class="qbo-row-label">Labor Cost</span><span class="qbo-row-val" style="color:var(--red)">− $64,872</span></div>
+          <div class="qbo-row" style="border-top:2px solid var(--border2);margin-top:4px;padding-top:10px"><span class="qbo-row-label" style="color:var(--text);font-weight:500">Prime Cost</span><span class="qbo-row-val" style="color:var(--yellow)">$118,728 (58.2%)</span></div>
+          <div class="qbo-row"><span class="qbo-row-label">Rent & Occupancy</span><span class="qbo-row-val" style="color:var(--red)">− $18,400</span></div>
+          <div class="qbo-row"><span class="qbo-row-label">Utilities</span><span class="qbo-row-val" style="color:var(--red)">− $4,800</span></div>
+          <div class="qbo-row"><span class="qbo-row-label">Marketing / Platform Fees</span><span class="qbo-row-val" style="color:var(--red)">− $2,400</span></div>
+          <div class="qbo-row"><span class="qbo-row-label">Other Controllable</span><span class="qbo-row-val" style="color:var(--red)">− $21,472</span></div>
+          <div class="qbo-row total"><span class="qbo-row-label">Controllable Profit</span><span class="qbo-row-val">$38,200 (18.7%)</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><div class="card-title">Bills Due This Week <span class="src-badge">QBO · MarginEdge Bill Pay</span></div></div>
+      <div class="card-body" style="padding:0">
+        <table class="data-table">
+          <thead><tr><th>Vendor</th><th>Due</th><th>Amount</th><th>Pay Via</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td>Sysco Foods</td><td class="mono muted">Fri 5/9</td><td class="mono">$2,840</td><td class="muted">ME Bill Pay</td><td><span class="status-pill pending">Scheduled</span></td></tr>
+            <tr><td>DiCicco Cheese</td><td class="mono muted">Fri 5/9</td><td class="mono">$1,360</td><td class="muted">ME Bill Pay</td><td><span class="status-pill pending">Pending</span></td></tr>
+            <tr><td>Consolidated Edison</td><td class="mono muted">Mon 5/12</td><td class="mono">$1,840</td><td class="muted">ACH</td><td><span class="status-pill ready">Ready</span></td></tr>
+            <tr><td>US Foods</td><td class="mono muted">Wed 5/14</td><td class="mono">$1,620</td><td class="muted">ME Bill Pay</td><td><span class="status-pill ready">Ready</span></td></tr>
+            <tr><td>Empire Meats</td><td class="mono muted">Fri 5/16</td><td class="mono">$980</td><td class="muted">Check</td><td><span class="status-pill paid">Paid</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── BANK & CASH ── -->
+  <div class="grid-2" style="margin-bottom:1.25rem">
+
+    <!-- Bank Feed -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">
+          Bank Feed — Chase Business
+          <span class="src-badge">QBO Bank Link · Live</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:0.68rem;color:var(--green)">
+          <div style="width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 5px var(--green)"></div>
+          Synced 47 min ago
+        </div>
+      </div>
+
+      <!-- Account summary bar -->
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--border)">
+        <div style="background:var(--surface2);padding:1rem 1.1rem">
+          <div style="font-size:0.62rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:4px">Bank Balance</div>
+          <div style="font-family:var(--font-disp);font-size:1.4rem;font-weight:700;color:var(--green)">$31,240</div>
+          <div style="font-size:0.68rem;color:var(--muted);margin-top:2px">Checking ····4821</div>
+        </div>
+        <div style="background:var(--surface2);padding:1rem 1.1rem">
+          <div style="font-size:0.62rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:4px">Book Balance</div>
+          <div style="font-family:var(--font-disp);font-size:1.4rem;font-weight:700;color:var(--text)">$29,840</div>
+          <div style="font-size:0.68rem;color:var(--muted);margin-top:2px">QBO · 3 uncleared</div>
+        </div>
+        <div style="background:var(--surface2);padding:1rem 1.1rem">
+          <div style="font-size:0.62rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:4px">Uncleared Items</div>
+          <div style="font-family:var(--font-disp);font-size:1.4rem;font-weight:700;color:var(--yellow)">$1,400</div>
+          <div style="font-size:0.68rem;color:var(--muted);margin-top:2px">Checks outstanding</div>
+        </div>
+      </div>
+
+      <!-- Recent bank transactions -->
+      <div class="card-body" style="padding:0">
+        <table class="data-table">
+          <thead>
+            <tr><th>Date</th><th>Description</th><th>Amount</th><th>Type</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="mono muted">5/8</td>
+              <td>Stripe Payout — Online Orders</td>
+              <td class="mono" style="color:var(--green)">+$4,820</td>
+              <td class="muted">Deposit</td>
+              <td><span class="status-pill paid">Cleared</span></td>
+            </tr>
+            <tr>
+              <td class="mono muted">5/8</td>
+              <td>Sysco Foods — ACH Debit</td>
+              <td class="mono" style="color:var(--red)">−$2,840</td>
+              <td class="muted">Payment</td>
+              <td><span class="status-pill paid">Cleared</span></td>
+            </tr>
+            <tr>
+              <td class="mono muted">5/7</td>
+              <td>Stripe Payout — Frozen DTC</td>
+              <td class="mono" style="color:var(--green)">+$1,200</td>
+              <td class="muted">Deposit</td>
+              <td><span class="status-pill paid">Cleared</span></td>
+            </tr>
+            <tr>
+              <td class="mono muted">5/7</td>
+              <td>DiCicco Cheese — Check #4471</td>
+              <td class="mono" style="color:var(--yellow)">−$1,360</td>
+              <td class="muted">Check</td>
+              <td><span class="status-pill pending">Uncleared</span></td>
+            </tr>
+            <tr>
+              <td class="mono muted">5/6</td>
+              <td>Consolidated Edison — ACH</td>
+              <td class="mono" style="color:var(--red)">−$1,840</td>
+              <td class="muted">Payment</td>
+              <td><span class="status-pill paid">Cleared</span></td>
+            </tr>
+            <tr>
+              <td class="mono muted">5/6</td>
+              <td>Goldbelly — Marketplace Payout</td>
+              <td class="mono" style="color:var(--green)">+$3,840</td>
+              <td class="muted">Deposit</td>
+              <td><span class="status-pill paid">Cleared</span></td>
+            </tr>
+            <tr>
+              <td class="mono muted">5/5</td>
+              <td>Empire Meats — Check #4470</td>
+              <td class="mono" style="color:var(--yellow)">−$980</td>
+              <td class="muted">Check</td>
+              <td><span class="status-pill pending">Uncleared</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="padding:10px 1.1rem;border-top:1px solid var(--border);font-size:0.7rem;color:var(--muted)">
+        Bank balance synced from Chase via QBO Bank Feed · Updates daily · 3 transactions pending QBO categorization
+      </div>
+    </div>
+
+    <!-- Cash flow + reconciliation -->
+    <div style="display:flex;flex-direction:column;gap:1.25rem">
+
+      <!-- 7-day cash flow -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">7-Day Cash Flow <span class="src-badge">QBO · Bank Feed</span></div>
+        </div>
+        <div class="card-body">
+          <div style="display:flex;align-items:flex-end;gap:4px;height:80px;margin-bottom:6px">
+            <!-- Simple visual cash flow bars -->
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px">
+              <div style="width:100%;border-radius:2px 2px 0 0;background:var(--green);opacity:0.8" title="+$6,200 in" data-h="62"></div>
+              <div style="width:100%;border-radius:0 0 2px 2px;background:var(--red);opacity:0.7" data-h="44"></div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px">
+              <div style="width:100%;border-radius:2px 2px 0 0;background:var(--green);opacity:0.8" data-h="48"></div>
+              <div style="width:100%;border-radius:0 0 2px 2px;background:var(--red);opacity:0.7" data-h="38"></div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px">
+              <div style="width:100%;border-radius:2px 2px 0 0;background:var(--green);opacity:0.8" data-h="55"></div>
+              <div style="width:100%;border-radius:0 0 2px 2px;background:var(--red);opacity:0.7" data-h="30"></div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px">
+              <div style="width:100%;border-radius:2px 2px 0 0;background:var(--green);opacity:0.8" data-h="70"></div>
+              <div style="width:100%;border-radius:0 0 2px 2px;background:var(--red);opacity:0.7" data-h="52"></div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px">
+              <div style="width:100%;border-radius:2px 2px 0 0;background:var(--green);opacity:0.8" data-h="80"></div>
+              <div style="width:100%;border-radius:0 0 2px 2px;background:var(--red);opacity:0.7" data-h="60"></div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px">
+              <div style="width:100%;border-radius:2px 2px 0 0;background:var(--green);opacity:0.8" data-h="58"></div>
+              <div style="width:100%;border-radius:0 0 2px 2px;background:var(--red);opacity:0.7" data-h="28"></div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px">
+              <div style="width:100%;border-radius:2px 2px 0 0;background:var(--green);opacity:0.8" data-h="90"></div>
+              <div style="width:100%;border-radius:0 0 2px 2px;background:var(--red);opacity:0.7" data-h="46"></div>
+            </div>
+          </div>
+          <div style="display:flex;gap:1rem;margin-top:0.5rem">
+            <div style="display:flex;align-items:center;gap:5px;font-size:0.68rem;color:#a8b0be"><div style="width:8px;height:8px;border-radius:2px;background:var(--green)"></div>Money In</div>
+            <div style="display:flex;align-items:center;gap:5px;font-size:0.68rem;color:#a8b0be"><div style="width:8px;height:8px;border-radius:2px;background:var(--red)"></div>Money Out</div>
+          </div>
+          <div style="margin-top:0.75rem;display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem">
+            <div style="background:var(--surface2);border-radius:4px;padding:8px 10px">
+              <div style="font-size:0.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:2px">7-Day In</div>
+              <div style="font-size:0.95rem;font-weight:500;color:var(--green)">+$15,860</div>
+            </div>
+            <div style="background:var(--surface2);border-radius:4px;padding:8px 10px">
+              <div style="font-size:0.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:2px">7-Day Out</div>
+              <div style="font-size:0.95rem;font-weight:500;color:var(--red)">−$10,640</div>
+            </div>
+            <div style="background:var(--surface2);border-radius:4px;padding:8px 10px">
+              <div style="font-size:0.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:2px">Net 7-Day</div>
+              <div style="font-size:0.95rem;font-weight:500;color:var(--text)">+$5,220</div>
+            </div>
           </div>
         </div>
       </div>
 
-      <div class="form-row full" style="margin-top:1rem;">
-        <div class="form-group">
-          <label>Payment</label>
-          <select>
-            <option>Credit / Debit Card</option>
-            <option>Apple Pay</option>
-            <option>Google Pay</option>
-          </select>
+      <!-- Reconciliation status -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Reconciliation Status <span class="src-badge">QBO</span></div>
         </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>Card Number</label>
-          <input type="text" placeholder="4242 4242 4242 4242">
-        </div>
-        <div class="form-group">
-          <label>Expiry / CVV</label>
-          <input type="text" placeholder="MM/YY  ·  CVV">
+        <div class="card-body">
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:var(--green-dim);border:1px solid rgba(46,204,135,0.2);border-radius:4px">
+              <div>
+                <div style="font-size:0.78rem;font-weight:500;color:var(--text)">April 2026</div>
+                <div style="font-size:0.68rem;color:var(--muted)">Completed 5/2/26</div>
+              </div>
+              <span class="status-pill ready">Reconciled</span>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:var(--yellow-dim);border:1px solid rgba(224,197,42,0.2);border-radius:4px">
+              <div>
+                <div style="font-size:0.78rem;font-weight:500;color:var(--text)">May 2026</div>
+                <div style="font-size:0.68rem;color:var(--muted)">In progress · 3 uncleared items</div>
+              </div>
+              <span class="status-pill pending">In Progress</span>
+            </div>
+            <div style="padding:10px 12px;background:var(--surface2);border-radius:4px;font-size:0.75rem;color:#a8b0be;line-height:1.6">
+              <strong style="color:var(--text);display:block;margin-bottom:3px">Bank vs. Book difference: +$1,400</strong>
+              3 checks written but not yet cleared (DiCicco $1,360 + Empire $980 − cleared deposits). Expected to resolve within 2–3 business days.
+            </div>
+          </div>
         </div>
       </div>
 
-      <div class="order-summary" id="orderSummary"></div>
+      <!-- Accounts summary -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Linked Accounts <span class="src-badge">QBO Bank Feed</span></div>
+        </div>
+        <div class="card-body" style="padding:0">
+          <table class="data-table">
+            <thead><tr><th>Account</th><th>Bank</th><th>Balance</th><th>Last Sync</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><div>Business Checking</div><div class="muted" style="font-size:0.65rem">····4821 · WPB Ops</div></td>
+                <td class="muted">Chase</td>
+                <td class="mono" style="color:var(--green)">$31,240</td>
+                <td class="mono muted">47 min ago</td>
+              </tr>
+              <tr>
+                <td><div>Business Checking</div><div class="muted" style="font-size:0.65rem">····2204 · Brooklyn Ops</div></td>
+                <td class="muted">Chase</td>
+                <td class="mono" style="color:var(--green)">$18,640</td>
+                <td class="mono muted">47 min ago</td>
+              </tr>
+              <tr>
+                <td><div>Business Credit Card</div><div class="muted" style="font-size:0.65rem">····8814 · Purchases</div></td>
+                <td class="muted">Chase Ink</td>
+                <td class="mono" style="color:var(--yellow)">−$4,280</td>
+                <td class="mono muted">2 hrs ago</td>
+              </tr>
+              <tr>
+                <td><div>Savings — Reserve</div><div class="muted" style="font-size:0.65rem">····0091 · Tax Reserve</div></td>
+                <td class="muted">Chase</td>
+                <td class="mono">$22,000</td>
+                <td class="mono muted">Today 8am</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
 
-      <button class="place-order-btn" onclick="placeOrder()">Place Order →</button>
-      <button onclick="closeCheckout()" style="width:100%;background:none;border:none;color:var(--muted);padding:10px;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:6px;">Cancel</button>
     </div>
+  </div>
 
-    <div class="success-state" id="successState">
-      <div class="success-icon">&#10003;</div>
-      <h2>Order Placed!</h2>
-      <p class="order-num" id="successOrderNum">#JUL-0000</p>
-      <p class="est-time" id="successEta">Ready in approximately 25–30 min</p>
-      <p style="color:var(--muted);font-size:0.85rem;margin-top:1rem;line-height:1.7;">
-        A confirmation will be sent to your email.<br>We'll text you when your order is ready.
-      </p>
-      <button onclick="closeAll()" style="margin-top:1.5rem;background:var(--ember);border:none;color:var(--cream);padding:12px 28px;border-radius:4px;font-family:'DM Sans',sans-serif;font-size:0.9rem;cursor:pointer;">Done</button>
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">Integration Health <span class="src-badge">All Systems</span></div>
+    </div>
+    <div class="card-body">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem">
+        <div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--surface2);border-radius:var(--radius);border:1px solid var(--border)">
+          <div style="width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green)"></div>
+          <div><div style="font-size:0.78rem;font-weight:500">Toast POS</div><div style="font-size:0.65rem;color:var(--muted)">WPB + Brooklyn · Syncing</div></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--surface2);border-radius:var(--radius);border:1px solid var(--border)">
+          <div style="width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green)"></div>
+          <div><div style="font-size:0.78rem;font-weight:500">MarginEdge</div><div style="font-size:0.65rem;color:var(--muted)">Invoices + Cost · Live</div></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--surface2);border-radius:var(--radius);border:1px solid var(--border)">
+          <div style="width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green)"></div>
+          <div><div style="font-size:0.78rem;font-weight:500">QuickBooks Online</div><div style="font-size:0.65rem;color:var(--muted)">ME → QBO auto-export · Active</div></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--surface2);border-radius:var(--radius);border:1px solid var(--border)">
+          <div style="width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green)"></div>
+          <div><div style="font-size:0.78rem;font-weight:500">Juliana's Ordering App</div><div style="font-size:0.65rem;color:var(--muted)">Local + Frozen · Live</div></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--surface2);border-radius:var(--radius);border:1px solid var(--border)">
+          <div style="width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green)"></div>
+          <div><div style="font-size:0.78rem;font-weight:500">Chase Bank Feed</div><div style="font-size:0.65rem;color:var(--muted)">4 accounts linked · QBO Bank Feed · Synced today</div></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--surface2);border-radius:var(--radius);border:1px solid var(--border)">
+          <div style="width:8px;height:8px;border-radius:50%;background:var(--yellow);box-shadow:0 0 6px var(--yellow)"></div>
+          <div><div style="font-size:0.78rem;font-weight:500">FreshDirect</div><div style="font-size:0.65rem;color:var(--muted)">Manual sync · Weekly · No API</div></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--surface2);border-radius:var(--radius);border:1px solid var(--border)">
+          <div style="width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green)"></div>
+          <div><div style="font-size:0.78rem;font-weight:500">Goldbelly</div><div style="font-size:0.65rem;color:var(--muted)">Via Extensiv API · Orders + Tracking + Inventory sync</div></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--surface2);border-radius:var(--radius);border:1px solid var(--border)">
+          <div style="width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green)"></div>
+          <div><div style="font-size:0.78rem;font-weight:500">Extensiv Integration Manager</div><div style="font-size:0.65rem;color:var(--muted)">Goldbelly middleware · Merchant API Key active</div></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--surface2);border-radius:var(--radius);border:1px solid var(--border)">
+          <div style="width:8px;height:8px;border-radius:50%;background:var(--yellow);box-shadow:0 0 6px var(--yellow)"></div>
+          <div><div style="font-size:0.78rem;font-weight:500">Toast → ME API Fee</div><div style="font-size:0.65rem;color:var(--muted)">Pass-through active · Review billing</div></div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
-
-<!-- TOAST -->
-<div class="toast" id="toast"></div>
 
 <script>
-const MENU = [
-  { id:1, cat:'pizza', tag:'House Specialty', name:'Margherita', desc:'San Marzano tomato, fresh mozzarella di bufala, fresh basil, extra virgin olive oil', price:22 },
-  { id:2, cat:'pizza', tag:'Fan Favorite', name:'Meatball', desc:'House tomato, fresh mozzarella, Juliana\'s legendary house-made meatballs, ricotta dollops', price:24 },
-  { id:3, cat:'pizza', tag:'', name:'Prosciutto & Arugula', desc:'White base, prosciutto di Parma, fresh arugula, shaved parmigiano, lemon drizzle', price:26 },
-  { id:4, cat:'pizza', tag:'', name:'White Pie', desc:'Ricotta, fresh mozzarella, roasted garlic, olive oil, sea salt, cracked pepper', price:23 },
-  { id:5, cat:'pizza', tag:'', name:'Wild Mushroom', desc:'House tomato, fresh mozzarella, roasted crimini & shiitake mushrooms, thyme', price:23 },
-  { id:6, cat:'pizza', tag:'', name:'Sausage & Peppers', desc:'Tomato, fresh mozzarella, house Italian sausage, roasted sweet peppers, basil', price:25 },
-  { id:7, cat:'salad', tag:'', name:'Arugula Salad', desc:'Baby arugula, goat cheese, toasted walnuts, cherry tomatoes, lemon-honey vinaigrette', price:16 },
-  { id:8, cat:'salad', tag:'', name:'Classic Caesar', desc:'Romaine hearts, house-made Caesar dressing, parmigiano, house croutons', price:15 },
-  { id:9, cat:'drink', tag:'', name:'House Red Wine', desc:'Rotating Italian selection — ask your server for today\'s pour', price:12 },
-  { id:10, cat:'drink', tag:'', name:'House White Wine', desc:'Light and crisp — pairs beautifully with the Margherita', price:12 },
-  { id:11, cat:'drink', tag:'', name:'Draft Beer', desc:'Rotating local and Italian craft selections on tap', price:9 },
-  { id:12, cat:'drink', tag:'', name:'San Pellegrino', desc:'750ml bottle, still or sparkling', price:5 },
-  { id:13, cat:'dessert', tag:'Signature', name:'Pistachio Ring Dings', desc:'Our famous house-made pistachio cream–filled chocolate cake bites. The stuff of legend.', price:10 },
-  { id:14, cat:'dessert', tag:'', name:'Classic Cannoli', desc:'Crispy shell, house ricotta filling, mini chocolate chips, pistachios', price:9 },
-  { id:15, cat:'dessert', tag:'', name:'Tiramisu', desc:'Espresso-soaked ladyfingers, mascarpone cream, cocoa — made fresh daily', price:11 },
-];
-
-const PIE_LIMIT = 5;
-let cart = {};
-let currentCat = 'all';
-let orderType = 'pickup';
-
-function getPieCount() {
-  return MENU.filter(i => i.cat === 'pizza')
-    .reduce((sum, i) => sum + (cart[i.id] || 0), 0);
+// Clock
+function tick() {
+  const now = new Date();
+  let h = now.getHours(), m = now.getMinutes(), s = now.getSeconds();
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  h = h % 12 || 12;
+  document.getElementById('clock').textContent =
+    `${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')} ${ampm}`;
 }
+setInterval(tick, 1000); tick();
 
-function renderMenu(cat) {
-  const grid = document.getElementById('menuGrid');
-  const label = document.getElementById('sectionLabel');
-  const items = cat === 'all' ? MENU : MENU.filter(i => i.cat === cat);
-  const labels = { all:'Full Menu', pizza:'Coal-Fired Pizzas', salad:'Salads', drink:'Drinks', dessert:'Desserts' };
-  label.textContent = labels[cat] || 'Full Menu';
-  const pies = getPieCount();
-  const atLimit = pies >= PIE_LIMIT;
-  grid.innerHTML = items.map(item => {
-    const isPizza = item.cat === 'pizza';
-    const blocked = isPizza && atLimit && !(cart[item.id] > 0);
-    return `
-    <div class="menu-item" id="item-${item.id}">
-      ${item.tag ? `<p class="item-tag">${item.tag}</p>` : ''}
-      <p class="item-name">${item.name}</p>
-      <p class="item-desc">${item.desc}</p>
-      <div class="item-footer">
-        <span class="item-price">$${item.price}</span>
-        <button class="add-btn ${cart[item.id] ? 'added' : ''} ${blocked ? 'blocked' : ''}"
-          onclick="addToCart(${item.id})"
-          id="btn-${item.id}"
-          ${blocked ? 'disabled title="5-pie limit reached"' : ''}>
-          ${blocked ? '—' : '+'}
-        </button>
-      </div>
-    </div>`;
-  }).join('');
-  updatePieBanner();
-}
-
-function updatePieBanner() {
-  const pies = getPieCount();
-  const banner = document.getElementById('pieBanner');
-  if (!banner) return;
-  if (pies === 0) { banner.style.display = 'none'; return; }
-  banner.style.display = 'flex';
-  const remaining = PIE_LIMIT - pies;
-  if (remaining > 0) {
-    banner.style.background = 'rgba(200,169,110,0.1)';
-    banner.style.borderColor = 'rgba(200,169,110,0.3)';
-    banner.innerHTML = `<span style="color:var(--gold)">&#x1F355; ${pies} of ${PIE_LIMIT} pies</span><span style="color:var(--muted);font-size:0.8rem">${remaining} more allowed online</span>`;
-  } else {
-    banner.style.background = 'rgba(201,74,30,0.12)';
-    banner.style.borderColor = 'rgba(201,74,30,0.35)';
-    banner.innerHTML = `<span style="color:var(--ember)">&#x1F355; 5-pie max reached</span><span style="color:var(--muted);font-size:0.8rem">Need 6+? Call <a href="tel:5617666200" style="color:var(--gold);text-decoration:none">(561) 766-6200</a></span>`;
-  }
-}
-
-function filterCategory(cat, el) {
-  currentCat = cat;
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+// Panel switching
+function showPanel(id, el) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tb-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
   el.classList.add('active');
-  renderMenu(cat);
 }
 
-function addToCart(id) {
-  const item = MENU.find(i => i.id === id);
-  if (item.cat === 'pizza' && getPieCount() >= PIE_LIMIT) {
-    showToast('5-pie max — call us for larger orders');
-    return;
-  }
-  cart[id] = (cart[id] || 0) + 1;
-  updateCartUI();
-  showToast(`${item.name} added`);
-  const btn = document.getElementById('btn-'+id);
-  if(btn) { btn.classList.add('added'); btn.textContent = '✓'; setTimeout(()=>{ renderMenu(currentCat); },600); }
-}
-
-function updateCartUI() {
-  const total = Object.values(cart).reduce((s,v) => s+v, 0);
-  document.getElementById('cartCount').textContent = total;
-  renderCartItems();
-  updatePieBanner();
-}
-
-function renderCartItems() {
-  const el = document.getElementById('cartItems');
-  const footer = document.getElementById('cartFooter');
-  const keys = Object.keys(cart).filter(k => cart[k] > 0);
-  if(!keys.length) {
-    el.innerHTML = '<p class="cart-empty">Your cart is empty.<br>Add something delicious.</p>';
-    footer.style.display = 'none'; return;
-  }
-  const pies = getPieCount();
-  let sub = 0;
-  let html = '';
-  if (pies >= PIE_LIMIT) {
-    html += `<div style="background:rgba(201,74,30,0.1);border:1px solid rgba(201,74,30,0.3);border-radius:4px;padding:10px 14px;margin-bottom:1rem;font-size:0.8rem;color:var(--muted);line-height:1.6;">
-      <strong style="color:var(--ember);display:block;margin-bottom:2px;">5-pie online limit reached</strong>
-      Need more? Call <a href="tel:5617666200" style="color:var(--gold)">(561) 766-6200</a> and we'll take care of you.
-    </div>`;
-  }
-  html += keys.map(id => {
-    const item = MENU.find(i => i.id == id);
-    const lineTotal = item.price * cart[id];
-    sub += lineTotal;
-    return `<div class="cart-line">
-      <div class="cart-line-info">
-        <p class="cart-line-name">${item.name}</p>
-        <p class="cart-line-price">$${lineTotal.toFixed(2)}</p>
-      </div>
-      <div class="qty-ctrl">
-        <button class="qty-btn" onclick="changeQty(${id},-1)">−</button>
-        <span class="qty-val">${cart[id]}</span>
-        <button class="qty-btn" onclick="changeQty(${id},1)" ${item.cat==='pizza' && pies>=PIE_LIMIT ? 'disabled style="opacity:0.3;cursor:not-allowed"' : ''}>+</button>
-      </div>
-    </div>`;
-  }).join('');
-  el.innerHTML = html;
-  const tax = sub * 0.07;
-  const total = sub + tax;
-  document.getElementById('cartSubtotal').textContent = '$'+sub.toFixed(2);
-  document.getElementById('cartTax').textContent = '$'+tax.toFixed(2);
-  document.getElementById('cartTotal').textContent = '$'+total.toFixed(2);
-  footer.style.display = 'block';
-}
-
-function changeQty(id, delta) {
-  const item = MENU.find(i => i.id == id);
-  if (delta > 0 && item.cat === 'pizza' && getPieCount() >= PIE_LIMIT) {
-    showToast('5-pie max — call us for larger orders');
-    return;
-  }
-  cart[id] = Math.max(0, (cart[id]||0) + delta);
-  if(cart[id] === 0) delete cart[id];
-  updateCartUI();
-  renderMenu(currentCat);
-}
-
-function openCart() {
-  document.getElementById('cartOverlay').classList.add('open');
-  document.getElementById('cartDrawer').classList.add('open');
-}
-function closeCart() {
-  document.getElementById('cartOverlay').classList.remove('open');
-  document.getElementById('cartDrawer').classList.remove('open');
-}
-
-function setOrderType(type, el) {
-  orderType = type;
-  document.querySelectorAll('.ot-btn').forEach(b => b.classList.remove('active'));
-  el.classList.add('active');
-  document.getElementById('deliveryFields').style.display = type === 'delivery' ? 'block' : 'none';
-}
-
-function openCheckout() {
-  closeCart();
-  const locName = document.getElementById('locationSelect').value === 'wpb' ? 'West Palm Beach' : 'Brooklyn, NY';
-  document.getElementById('checkoutLocation').textContent = locName;
-  buildOrderSummary();
-  document.getElementById('checkoutForm').style.display = 'block';
-  document.getElementById('successState').style.display = 'none';
-  document.getElementById('checkoutModal').classList.add('open');
-}
-function closeCheckout() { document.getElementById('checkoutModal').classList.remove('open'); }
-
-function buildOrderSummary() {
-  const keys = Object.keys(cart).filter(k => cart[k] > 0);
-  let sub = 0;
-  let html = '<p class="order-summary-title">Order Summary</p>';
-  keys.forEach(id => {
-    const item = MENU.find(i => i.id == id);
-    const line = item.price * cart[id];
-    sub += line;
-    html += `<div class="summary-line"><span>${item.name} × ${cart[id]}</span><span>$${line.toFixed(2)}</span></div>`;
+// Location toggle
+document.querySelectorAll('.loc-btn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.loc-btn').forEach(b => b.classList.remove('active'));
+    this.classList.add('active');
   });
-  const tax = sub * 0.07;
-  const total = sub + tax;
-  html += `<div class="summary-line"><span>Tax</span><span>$${tax.toFixed(2)}</span></div>`;
-  html += `<div class="summary-total"><span>Total</span><span>$${total.toFixed(2)}</span></div>`;
-  document.getElementById('orderSummary').innerHTML = html;
-}
+});
 
-function placeOrder() {
-  const num = 'JUL-' + Math.floor(1000 + Math.random() * 9000);
-  const eta = orderType === 'delivery' ? '45–55 minutes' : '25–30 min';
-  document.getElementById('successOrderNum').textContent = '#' + num;
-  document.getElementById('successEta').textContent = orderType === 'delivery' ? `Delivery in approximately ${eta}` : `Ready for pickup in approximately ${eta}`;
-  document.getElementById('checkoutForm').style.display = 'none';
-  document.getElementById('successState').style.display = 'block';
-  cart = {};
-  updateCartUI();
-}
+// Build weekly bar chart
+const days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+const wpbData = [3200,3800,3400,4100,4930,6200,5800];
+const bkData  = [4800,5200,5600,5900,6910,8400,7900];
+const maxVal = Math.max(...wpbData,...bkData);
+const chartEl = document.getElementById('salesChart');
+const labelsEl = document.getElementById('chartLabels');
+days.forEach((d,i) => {
+  const group = document.createElement('div');
+  group.className = 'bar-group';
+  const bWpb = document.createElement('div');
+  bWpb.className = 'bar wpb';
+  bWpb.style.height = Math.round((wpbData[i]/maxVal)*110)+'px';
+  bWpb.title = `WPB ${d}: $${wpbData[i].toLocaleString()}`;
+  const bBk = document.createElement('div');
+  bBk.className = 'bar bk';
+  bBk.style.height = Math.round((bkData[i]/maxVal)*110)+'px';
+  bBk.title = `BK ${d}: $${bkData[i].toLocaleString()}`;
+  group.appendChild(bWpb); group.appendChild(bBk);
+  chartEl.appendChild(group);
+  const lbl = document.createElement('div');
+  lbl.className = 'chart-label'; lbl.textContent = d;
+  labelsEl.appendChild(lbl);
+});
 
-function closeAll() {
-  closeCheckout();
-  renderMenu(currentCat);
-}
-
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2000);
-}
-
-
-const FROZEN_ITEMS = {
-  margherita: { name: 'Margherita Take & Bake', price: 21.99, oz: 19 },
-  pepperoni:  { name: 'Pepperoni Take & Bake',  price: 22.99, oz: 20 },
-};
-let frozenCart = { margherita: 0, pepperoni: 0 };
-
-function changeFrozenQty(sku, delta) {
-  frozenCart[sku] = Math.max(0, frozenCart[sku] + delta);
-  document.getElementById('fq-' + sku).textContent = frozenCart[sku];
-  document.getElementById('shipResult').style.display = 'none';
-}
-
-function calcShipping() {
-  const zip = document.getElementById('shipZip').value.trim();
-  const totalPies = frozenCart.margherita + frozenCart.pepperoni;
-  if (totalPies === 0) { showToast('Add at least one frozen pie first'); return; }
-  if (zip.length !== 5 || isNaN(zip)) { showToast('Enter a valid 5-digit ZIP'); return; }
-  const sub = Object.keys(frozenCart).reduce((s,k) => s + frozenCart[k] * FROZEN_ITEMS[k].price, 0);
-  const prefix = parseInt(zip.substring(0,3));
-  let shipCost, zone, noteText;
-  if (prefix >= 100 && prefix <= 149) {
-    shipCost = 0; zone = 'Metro NY/NJ';
-    noteText = 'Free overnight delivery for Metro New York & New Jersey orders!';
-  } else if (prefix >= 330 && prefix <= 349) {
-    shipCost = 14.99; zone = 'Florida';
-    noteText = '2-day express shipping. Packed with gel packs — arrives cold and ready to bake.';
-  } else if ((prefix >= 900 && prefix <= 961) || (prefix >= 970 && prefix <= 979)) {
-    shipCost = 24.99; zone = 'West Coast';
-    noteText = '2-day express with dry ice. Ships Monday–Wednesday only to ensure freshness on arrival.';
-  } else {
-    shipCost = 18.99; zone = 'Nationwide';
-    noteText = '2-day express with dry ice. Ships Monday–Wednesday only to ensure weekend delivery.';
-  }
-  if (sub >= 100) { shipCost = Math.max(0, shipCost - 5); noteText = 'Free shipping discount applied on orders over $100! ' + noteText; }
-  const total = sub + shipCost;
-  document.getElementById('srPies').textContent = totalPies + ' pie' + (totalPies > 1 ? 's' : '') + ' to ' + zone;
-  document.getElementById('srSub').textContent = '$' + sub.toFixed(2);
-  document.getElementById('srShip').textContent = shipCost === 0 ? 'FREE' : '$' + shipCost.toFixed(2);
-  document.getElementById('srTotal').textContent = '$' + total.toFixed(2);
-  document.getElementById('shipResult').style.display = 'block';
-  document.getElementById('shipNote').style.display = 'block';
-  document.getElementById('shipNote').textContent = noteText;
-}
-
-function openFrozenCheckout() {
-  const totalPies = frozenCart.margherita + frozenCart.pepperoni;
-  if (totalPies === 0) { showToast('Add at least one frozen pie'); return; }
-  const sub = Object.keys(frozenCart).reduce((s,k) => s + frozenCart[k] * FROZEN_ITEMS[k].price, 0);
-  const zip = document.getElementById('shipZip').value.trim();
-  const prefix = parseInt((zip || '100').substring(0,3));
-  let ship = 18.99;
-  if (prefix >= 100 && prefix <= 149) ship = 0;
-  else if (prefix >= 330 && prefix <= 349) ship = 14.99;
-  else if ((prefix >= 900 && prefix <= 961) || (prefix >= 970 && prefix <= 979)) ship = 24.99;
-  if (sub >= 100) ship = Math.max(0, ship - 5);
-  let html = '<p class="order-summary-title">Frozen Order Summary</p>';
-  Object.keys(frozenCart).forEach(k => {
-    if (frozenCart[k] > 0) {
-      html += `<div class="summary-line"><span>${FROZEN_ITEMS[k].name} × ${frozenCart[k]}</span><span>$${(frozenCart[k]*FROZEN_ITEMS[k].price).toFixed(2)}</span></div>`;
-    }
-  });
-  html += `<div class="summary-line"><span>Cold-chain shipping</span><span>${ship===0?'FREE':'$'+ship.toFixed(2)}</span></div>`;
-  html += `<div class="summary-total"><span>Total</span><span>$${(sub+ship).toFixed(2)}</span></div>`;
-  document.getElementById('frozenOrderSummary').innerHTML = html;
-  document.getElementById('frozenForm').style.display = 'block';
-  document.getElementById('frozenSuccessState').style.display = 'none';
-  document.getElementById('frozenModal').classList.add('open');
-}
-
-function closeFrozenModal() {
-  document.getElementById('frozenModal').classList.remove('open');
-}
-
-function placeFrozenOrder() {
-  const num = 'FRZ-' + Math.floor(1000 + Math.random() * 9000);
-  document.getElementById('frozenOrderNum').textContent = '#' + num;
-  document.getElementById('frozenForm').style.display = 'none';
-  document.getElementById('frozenSuccessState').style.display = 'block';
-  frozenCart = { margherita: 0, pepperoni: 0 };
-  document.getElementById('fq-margherita').textContent = '0';
-  document.getElementById('fq-pepperoni').textContent = '0';
-  document.getElementById('shipResult').style.display = 'none';
-}
-
-
+// Cash flow bar heights
+document.querySelectorAll('[data-h]').forEach(el => {
+  el.style.height = el.dataset.h + 'px';
+});
 </script>
 </body>
 </html>
