@@ -124,6 +124,13 @@
     border-bottom: 1px solid var(--border);
     padding: 0 2rem;
     overflow-x: auto;
+    max-width: 1140px;
+    margin: 0 auto;
+    width: 100%;
+  }
+  /* full-width underline behind the centered tabs */
+  .tabs-wrap {
+    border-bottom: 1px solid var(--border);
   }
   .tabs-bar::-webkit-scrollbar { display: none; }
   .tab-btn {
@@ -144,7 +151,7 @@
 
   /* ─── MENU GRID ─── */
   .menu-section {
-    max-width: 1100px; margin: 0 auto;
+    max-width: 1140px; margin: 0 auto;
     padding: 3rem 2rem;
   }
   .section-label {
@@ -153,7 +160,7 @@
   }
   .menu-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
     gap: 1px;
     border: 1px solid var(--border);
   }
@@ -548,12 +555,16 @@
     padding-top: 1rem;
   }
 
+  @media(max-width:900px) {
+    .menu-grid { grid-template-columns: repeat(2, 1fr); }
+  }
   @media(max-width:600px) {
     .header-right { gap: 0.75rem; }
     .location-select { display: none; }
     .hero { padding: 3rem 1.25rem 2.5rem; }
     .tabs-bar { padding: 0 1rem; }
     .menu-section { padding: 2rem 1rem; }
+    .menu-grid { grid-template-columns: 1fr; }
     footer { padding: 2rem 1rem; }
   }
 </style>
@@ -584,12 +595,14 @@
 </section>
 
 <!-- CATEGORY TABS -->
-<div class="tabs-bar">
-  <button class="tab-btn active" onclick="filterCategory('all', this)">All</button>
-  <button class="tab-btn" onclick="filterCategory('pizza', this)">Pizzas</button>
-  <button class="tab-btn" onclick="filterCategory('salad', this)">Salads</button>
-  <button class="tab-btn" onclick="filterCategory('drink', this)">Drinks</button>
-  <button class="tab-btn" onclick="filterCategory('dessert', this)">Desserts</button>
+<div class="tabs-wrap">
+  <div class="tabs-bar">
+    <button class="tab-btn active" onclick="filterCategory('all', this)">All</button>
+    <button class="tab-btn" onclick="filterCategory('pizza', this)">Pizzas</button>
+    <button class="tab-btn" onclick="filterCategory('salad', this)">Salads</button>
+    <button class="tab-btn" onclick="filterCategory('drink', this)">Drinks</button>
+    <button class="tab-btn" onclick="filterCategory('dessert', this)">Desserts</button>
+  </div>
 </div>
 
 <!-- MENU -->
